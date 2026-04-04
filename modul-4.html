@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>APEX TRADER — Module 4: Trading Journal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+:root{
+  --bg:#030C0A;--s2:#071410;--s3:#0C1E18;--s4:#112620;
+  --teal:#00C8A8;--tdim:rgba(0,200,168,.1);--tbdr:rgba(0,200,168,.28);
+  --green:#22C97A;--gdim:rgba(34,201,122,.1);--gbdr:rgba(34,201,122,.25);
+  --gold:#D4A843;--gldim:rgba(212,168,67,.1);--glbdr:rgba(212,168,67,.25);
+  --red:#E84040;--rdim:rgba(232,64,64,.1);--rbdr:rgba(232,64,64,.25);
+  --blue:#1D9BF0;--bdim:rgba(29,155,240,.08);
+  --purple:#9B6DFF;
+  --t:#DDF4EE;--td:#4A8070;--tf:#153028;
+  --border:rgba(255,255,255,.05);--border2:rgba(255,255,255,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font-family:'Outfit',sans-serif;overflow-x:hidden;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 50% 35% at 20% 0%,rgba(0,200,168,.05),transparent 60%);pointer-events:none;z-index:0}
+
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:256px;background:rgba(3,12,10,.97);border-right:1px solid var(--border);z-index:100;display:flex;flex-direction:column;backdrop-filter:blur(20px)}
+.sb-top{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sb-logo-mark-skip{display:none} .sb-module{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--teal);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sb-module::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.sb-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;color:var(--t);line-height:1.1}
+.sb-nav{flex:1;overflow-y:auto;padding:12px 8px}
+.nav-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--tf);padding:10px 12px 6px;display:block}
+.nav-a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;text-decoration:none;font-size:12.5px;color:var(--td);transition:all .2s;border-left:2px solid transparent;margin:1px 0}
+.nav-a:hover{background:var(--s3);color:var(--t)}.nav-a.on{background:var(--tdim);color:var(--teal);border-left-color:var(--teal)}
+.mod-links{padding:8px;border-top:1px solid var(--border)}
+.mod-link{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;text-decoration:none;font-size:11px;color:var(--td);transition:all .2s;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+.mod-link:hover{background:var(--s3);color:var(--t)}.mod-link.am{color:var(--teal)}
+.sb-bottom{padding:16px 20px;border-top:1px solid var(--border)}
+.prog-row{display:flex;justify-content:space-between;font-size:11px;color:var(--td);font-family:'JetBrains Mono',monospace;margin-bottom:7px}
+.prog-track{height:2px;background:var(--s3);border-radius:1px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--green));border-radius:1px;width:0%;transition:width .6s}
+.nav-toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--t);font-size:16px}
+@media(max-width:960px){.sidebar{transform:translateX(-100%);transition:transform .3s}.sidebar.open{transform:translateX(0)}.main{margin-left:0!important;width:100%!important}.hero{padding:80px 20px 36px!important;min-height:auto!important}.content{padding:0 20px 80px!important}.nav-toggle{display:flex!important}}
+
+.main{margin-left:256px;min-height:100vh;position:relative;z-index:1}
+.hero{position:relative;min-height:420px;display:flex;flex-direction:column;justify-content:flex-end;padding:56px 60px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,200,168,.05),transparent 50%,rgba(34,201,122,.03) 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);background-size:48px 48px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--tdim);border:1px solid var(--tbdr);color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:6px 14px;border-radius:2px;margin-bottom:20px;width:fit-content;position:relative;z-index:1}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,8vw,96px);letter-spacing:5px;line-height:.9;position:relative;z-index:1;max-width:640px}
+.hero h1 em{color:var(--teal);font-style:normal}
+.hero-sub{font-size:15px;color:var(--td);max-width:520px;margin-top:18px;line-height:1.65;position:relative;z-index:1}
+.hero-sub em{color:var(--teal);font-style:italic}
+.content{padding:0 60px 120px}
+p{font-size:15px;color:var(--td);line-height:1.85;margin-bottom:16px}
+p strong{color:var(--t);font-weight:600}p em{color:var(--teal);font-style:italic}
+h3{font-family:'Crimson Pro',serif;font-size:21px;font-weight:600;color:var(--t);margin:26px 0 13px}
+.sec{margin-bottom:60px;opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}.sec.vis{opacity:1;transform:translateY(0)}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.sec-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--teal);letter-spacing:2px;background:var(--tdim);border:1px solid var(--tbdr);padding:4px 10px;border-radius:2px}
+.sec-title{font-family:'Crimson Pro',serif;font-size:clamp(22px,3vw,34px);font-weight:600;color:var(--t)}
+.sec-title em{color:var(--teal);font-style:italic}
+
+/* DASHBOARD STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
+.stat-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:18px 16px;text-align:center;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.sc-green::before{background:var(--green)}.sc-red::before{background:var(--red)}.sc-gold::before{background:var(--gold)}.sc-teal::before{background:var(--teal)}.sc-purple::before{background:var(--purple)}.sc-blue::before{background:var(--blue)}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;margin-bottom:3px}
+.stat-lbl{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--td);letter-spacing:2px;text-transform:uppercase}
+
+/* TRADE FORM */
+.trade-form{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:28px;margin:20px 0}
+.tf-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.tf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:16px}
+.tf-field{display:flex;flex-direction:column;gap:5px}
+.tf-label{font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--td)}
+.tf-input,.tf-select,.tf-textarea{background:var(--s3);border:1px solid var(--border2);border-radius:6px;padding:9px 12px;color:var(--t);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.tf-input:focus,.tf-select:focus,.tf-textarea:focus{border-color:var(--teal)}
+.tf-select{cursor:pointer}
+.tf-select option{background:var(--s3);color:var(--t)}
+.tf-textarea{resize:vertical;min-height:80px;line-height:1.6}
+.tf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.tf-full{grid-column:1/-1}
+
+/* EMOTION SLIDER */
+.emo-slider-wrap{margin:16px 0}
+.emo-sl-label{font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--td);margin-bottom:8px;display:flex;justify-content:space-between}
+.emo-slider{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;outline:none;cursor:pointer}
+.emo-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid var(--bg)}
+.emo-indicators{display:flex;justify-content:space-between;font-size:9px;color:var(--td);font-family:'JetBrains Mono',monospace;margin-top:5px}
+
+/* CONFLUENCE CHECK */
+.conf-check{background:var(--s3);border-radius:8px;padding:14px 16px;margin:14px 0}
+.cc-title{font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;display:flex;justify-content:space-between}
+.cc-items{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:600px){.cc-items{grid-template-columns:1fr}}
+.cc-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 8px;border-radius:5px;transition:background .15s}
+.cc-item:hover{background:var(--s2)}
+.cc-box{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.cc-item.on .cc-box{background:var(--teal);border-color:var(--teal)}
+.cc-item.on .cc-box::after{content:'✓';color:#000;font-size:9px;font-weight:700}
+.cc-txt{font-size:12px;color:var(--td)}
+.cc-item.on .cc-txt{color:var(--t)}
+
+/* SUBMIT BTN */
+.submit-btn{width:100%;padding:14px;background:var(--teal);color:#000;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;letter-spacing:.5px}
+.submit-btn:hover{background:#00E8C0;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,168,.3)}
+
+/* TRADES TABLE */
+.trades-wrap{background:var(--s2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:20px 0}
+.trades-head{background:var(--s3);padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.trades-head h3{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--teal);margin:0}
+.trades-filters{display:flex;gap:6px}
+.t-filter{padding:5px 11px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--td);font-size:9px;cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;transition:all .2s}
+.t-filter.on,.t-filter:hover{background:var(--tdim);border-color:var(--tbdr);color:var(--teal)}
+.trades-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.trades-table th{background:var(--s3);color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border2)}
+.trades-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--td);vertical-align:middle}
+.trades-table tr:hover td{background:var(--s3);color:var(--t)}
+.t-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+.t-win{background:var(--gdim);color:var(--green);border:1px solid var(--gbdr)}
+.t-loss{background:var(--rdim);color:var(--red);border:1px solid var(--rbdr)}
+.t-open{background:var(--gldim);color:var(--gold);border:1px solid var(--glbdr)}
+.t-long{background:var(--tdim);color:var(--teal);border:1px solid var(--tbdr)}
+.t-short{background:var(--rdim);color:var(--red);border:1px solid var(--rbdr)}
+.del-btn{padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--td);cursor:pointer;font-size:10px;transition:all .2s}
+.del-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* EQUITY CHART */
+.equity-chart{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:24px;margin:20px 0}
+.ec-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:18px}
+.chart-area{position:relative;height:160px;background:var(--bg);border-radius:8px;border:1px solid var(--border);overflow:hidden}
+.chart-area canvas{width:100%!important;height:100%!important}
+
+/* REFLECTION SECTION */
+.reflection{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:26px;margin:20px 0}
+.ref-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:20px}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.ref-grid{grid-template-columns:1fr}}
+.ref-field{display:flex;flex-direction:column;gap:6px}
+.ref-label{font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;color:var(--td);text-transform:uppercase}
+.ref-textarea{background:var(--s3);border:1px solid var(--border2);border-radius:6px;padding:10px 12px;color:var(--t);font-family:'Outfit',sans-serif;font-size:13px;outline:none;resize:vertical;min-height:90px;line-height:1.6;width:100%;transition:border-color .2s}
+.ref-textarea:focus{border-color:var(--teal)}
+.save-ref-btn{padding:10px 22px;background:var(--tdim);border:1px solid var(--tbdr);color:var(--teal);border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .2s;margin-top:12px}
+.save-ref-btn:hover{background:rgba(0,200,168,.15);transform:translateY(-1px)}
+
+/* WEEKLY SUMMARY */
+.week-sum{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:24px;margin:20px 0}
+.ws-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:18px}
+.ws-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:14px}
+.ws-day{background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center}
+.ws-day-name{font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--td);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.ws-day-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px}
+.ws-day-num{font-size:9px;color:var(--td);font-family:'JetBrains Mono',monospace}
+.ws-day.pos .ws-day-val{color:var(--green)}.ws-day.neg .ws-day-val{color:var(--red)}.ws-day.neu .ws-day-val{color:var(--td)}
+
+/* PRINT BUTTON */
+.print-zone{background:linear-gradient(135deg,rgba(0,200,168,.07),rgba(34,201,122,.04));border:1px solid var(--tbdr);border-radius:14px;padding:28px;margin:24px 0;text-align:center}
+.pz-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--teal);margin-bottom:8px}
+.pz-desc{font-size:13px;color:var(--td);margin-bottom:18px}
+.print-btn{padding:11px 26px;background:var(--teal);color:#000;border:none;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;transition:all .2s;margin:4px}
+.print-btn:hover{background:#00E8C0;transform:translateY(-1px)}
+.export-btn{padding:11px 26px;background:var(--s3);color:var(--td);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .2s;margin:4px}
+.export-btn:hover{background:var(--s4);color:var(--t);transform:translateY(-1px)}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--teal);color:#000;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none}
+.toast.on{opacity:1;transform:translateY(0)}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+@media print{.sidebar,.nav-toggle,.submit-btn,.del-btn,.print-zone{display:none!important}.main{margin-left:0!important}.content{padding:20px!important}}
+
+/* ── MOBILE FIXES ── */
+@media(max-width:960px){
+  .hero{padding:80px 24px 40px!important;min-height:auto}
+  .hero h1{font-size:clamp(42px,10vw,72px)!important;letter-spacing:2px}
+  .hero-sub{max-width:100%!important}
+  .hero-meta,.hero-stats{gap:20px!important;flex-wrap:wrap}
+  .content{padding:0 24px 80px!important}
+  .sec{margin-bottom:52px}
+  .sec-title{font-size:clamp(22px,5vw,32px)!important}
+  .flow{gap:0}
+  .flow-step{min-width:110px!important;padding:12px!important}
+  .cards{grid-template-columns:1fr!important}
+  .phases{grid-template-columns:1fr 1fr!important}
+  .tbl,.ctbl,.trades-table{font-size:11px}
+  .tbl th,.ctbl th,.trades-table th{padding:8px 10px!important;font-size:8px}
+  .tbl td,.ctbl td,.trades-table td{padding:8px 10px!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .emo-grid{grid-template-columns:1fr!important}
+  .stats-row{grid-template-columns:1fr 1fr 1fr!important}
+  .tf-grid{grid-template-columns:1fr!important}
+  .tf-row{grid-template-columns:1fr!important}
+  .rco-stats{grid-template-columns:1fr 1fr!important}
+  .ref-grid{grid-template-columns:1fr!important}
+  .ws-days{gap:4px!important}
+  .ws-day{padding:7px 4px!important}
+  .ws-day-val{font-size:16px!important}
+  .ws-day-name{font-size:7px!important}
+  .quiz-header{padding:18px 20px!important;flex-wrap:wrap;gap:10px}
+  .quiz-body{padding:20px!important}
+  .quiz-nav{padding:0 20px 20px!important;flex-wrap:wrap;gap:10px}
+  .q-dots{flex-wrap:wrap}
+  .rules-list{padding:0}
+  .rule-item{gap:10px}
+  .fib-lbl{min-width:auto!important;font-size:10px}
+  .fib-pct{min-width:44px!important}
+  .fib-stars{display:none}
+  .sl-range{min-width:0}
+  .slider-row{grid-template-columns:1fr auto!important;row-gap:4px}
+  .slider-row .sl-lbl{grid-column:1/-1}
+  .candle-tabs,.ftabs,.ind-filters,.trades-filters{flex-wrap:wrap;gap:5px}
+  .candle-display.on{grid-template-columns:1fr!important}
+  .fcontent.on{grid-template-columns:1fr!important}
+  .asel-grid{grid-template-columns:1fr 1fr!important}
+  .wheel-grid{grid-template-columns:1fr 1fr!important}
+  .manifesto-pillars{grid-template-columns:1fr!important}
+  .numbers-inner{grid-template-columns:1fr 1fr!important}
+  .modules-grid{grid-template-columns:1fr!important}
+  .mod-card{padding:22px 20px!important}
+  .alpha-header{padding-bottom:10px}
+  .alpha-letter{font-size:34px!important}
+  .term-head{padding:12px 14px!important}
+  .term-inner{padding:14px!important}
+  .liq-chart{padding:16px!important}
+  .acc-inner{padding:14px 14px 14px 14px!important}
+  .breathing{padding:24px 16px!important}
+  .risk-calc{padding:20px 16px!important}
+  .checklist{padding:18px 16px!important}
+  .trade-form{padding:20px 16px!important}
+  .equity-chart{padding:16px!important}
+  .week-sum{padding:18px 16px!important}
+  .reflection{padding:18px 16px!important}
+  .print-zone{padding:20px 16px!important}
+  .q-text{font-size:15px!important}
+  .r-score{font-size:56px!important}
+  .r-stats{gap:20px!important}
+  .rs-val{font-size:30px!important}
+  .aha{padding:20px 20px!important}
+  .aha h4{font-size:17px!important}
+  .insight{padding:14px 16px!important}
+  .gap-ex{padding:18px 16px!important}
+  .gap-txt{font-size:14px!important;line-height:2!important}
+  .gap-in{min-width:90px!important;font-size:13px!important}
+  .trades-wrap{overflow-x:auto}
+  .trades-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .lex-wrap{padding:16px 16px 60px!important}
+}
+@media(max-width:480px){
+  .phases{grid-template-columns:1fr!important}
+  .stats-row{grid-template-columns:1fr 1fr!important}
+  .hero h1{font-size:clamp(36px,11vw,60px)!important}
+  .hero-meta,.hero-stats{gap:14px}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .numbers-inner{grid-template-columns:1fr 1fr!important}
+  .candle-tabs button,.ftabs button{font-size:11px!important;padding:6px 10px!important}
+  .quiz-header{flex-direction:column;align-items:flex-start}
+}
+
+@media(max-width:960px){
+  html,body{overflow-x:hidden;max-width:100%}
+  .main{box-sizing:border-box;min-width:0}
+  .hero-badge{font-size:8px!important;letter-spacing:2px!important;padding:5px 10px!important}
+  .hero-meta,.hero-stats{flex-wrap:wrap;gap:16px}
+  .hm-val,.hs-val{font-size:26px!important}
+  table{width:100%;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .ind-grid{grid-template-columns:1fr!important}
+  .candle-display.on{grid-template-columns:1fr!important}
+  .fib-row{flex-wrap:wrap;gap:6px}
+  .fib-lbl{min-width:0!important;flex:1;font-size:10px}
+  .fib-stars{display:none!important}
+  .phases,.sm-phases{grid-template-columns:1fr 1fr!important}
+  .emo-grid{grid-template-columns:1fr!important}
+  .quiz-header{flex-wrap:wrap;gap:8px;padding:16px 18px!important}
+  .quiz-body{padding:18px 16px!important}
+  .quiz-nav{padding:0 16px 20px!important;flex-wrap:wrap;gap:8px}
+  .r-score{font-size:52px!important}
+  .r-stats{gap:16px!important}
+  .rs-val{font-size:28px!important}
+  .sl-range{width:100%}
+  .slider-row{display:flex!important;flex-direction:column!important;gap:6px!important}
+  .sl-lbl{font-size:12px}
+  .sl-val{font-size:18px!important;text-align:left!important}
+  .ref-grid,.ac-grid,.wc-grid{grid-template-columns:1fr!important}
+  .tf-grid{grid-template-columns:1fr!important}
+  .tf-row{grid-template-columns:1fr!important}
+  .cc-items{grid-template-columns:1fr!important}
+  .rco-stats{grid-template-columns:1fr 1fr!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .stats-row{grid-template-columns:1fr 1fr 1fr!important}
+  .ws-days{gap:3px!important}
+  .print-zone,.paper-cta{padding:20px 16px!important}
+  .search-bar{padding:12px 16px!important;position:sticky;top:0;z-index:50}
+  .term-head{padding:12px 14px!important}
+  .alpha-header{margin-bottom:12px}
+  .alpha-letter{font-size:32px!important}
+  .gap-txt{line-height:2.1!important;font-size:14px!important}
+  .gap-in{min-width:80px!important}
+  .acc-inner{padding:14px 12px 14px 12px!important}
+  .rule-item{flex-wrap:nowrap}
+  .rule-num{font-size:18px!important;min-width:24px}
+  .cl-txt,.check-text{font-size:12px!important}
+}
+@media(max-width:480px){
+  .hero h1{letter-spacing:1px!important}
+  .phases,.sm-phases{grid-template-columns:1fr!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .stats-row{grid-template-columns:1fr 1fr!important}
+  .cards{grid-template-columns:1fr!important}
+  .rco-stats{grid-template-columns:1fr 1fr!important}
+  .modules-grid{grid-template-columns:1fr!important}
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<button class="nav-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<nav class="sidebar">
+  <div class="sb-top"><div class="sb-logo" style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="width:26px;height:26px;border:1px solid var(--gbdr,rgba(200,146,42,.22));border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1L14 8L8 15L2 8Z" stroke="#C8922A" stroke-width="1.2"/><path d="M8 4L11 8L8 12L5 8Z" fill="#C8922A" opacity=".4"/></svg>
+      </div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--t)">APEX<span style="color:#C8922A">TRADER</span></div>
+    </div>
+    <div class="sb-module"><span>◆</span> MODULE 04 OF 05</div><div class="sb-title">TRADING<br>JOURNAL</div></div>
+  <div class="sb-nav">
+    <span class="nav-lbl">Abschnitte</span>
+    <a href="#dashboard" class="nav-a on"><span>📊</span> Dashboard</a>
+    <a href="#new-trade" class="nav-a"><span>➕</span> Log Trade</a>
+    <a href="#history" class="nav-a"><span>📋</span> History</a>
+    <a href="#equity" class="nav-a"><span>📈</span> Equity Curve</a>
+    <a href="#weekly" class="nav-a"><span>📅</span> Weekly View</a>
+    <a href="#reflection" class="nav-a"><span>✍️</span> Daily Reflection</a>
+  </div>
+  <div class="mod-links">
+    <span class="nav-lbl">All Modules</span>
+    <a href="modul-1.html" class="mod-link">◆ M1 — Economics</a>
+    <a href="modul-2.html" class="mod-link">◆ M2 — Analysis</a>
+    <a href="modul-3.html" class="mod-link">◆ M3 — Psychology</a>
+    <a href="modul-4.html" class="mod-link am">◆ M4 — Journal</a>
+    <a href="modul-5.html" class="mod-link">◆ M5 — Lexicon</a>
+    <a href="modul-6.html" class="sb-mod-link">◆ M6 — ICT Deep Dive</a>
+    <a href="modul-7.html" class="sb-mod-link">◆ M7 — Edge & Risk</a>
+  </div>
+  <div class="sb-bottom"><div class="prog-row"><span>Trades heute</span><span id="pct" style="color:var(--teal)">0</span></div><div class="prog-track"><div class="prog-fill" id="pfill"></div></div></div>
+</nav>
+
+<div class="main">
+<div class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-badge">◆ APEX TRADER — MODULE 4</div>
+  <h1>YOUR<br><em>TRADING</em><br>JOURNAL.</h1>
+  <p class="hero-sub">Paper trades, live trades, daily reflection — all in one place. <em>Without documentation there is no improvement.</em> The journal is your mirror.</p>
+</div>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<div class="sec" id="dashboard">
+  <div class="sec-head"><div class="sec-num">STATS</div><h2 class="sec-title">Your <em>Dashboard</em></h2></div>
+  <div class="stats-row">
+    <div class="stat-card sc-teal"><div class="stat-val" id="st-total" style="color:var(--teal)">0</div><div class="stat-lbl">Total Trades</div></div>
+    <div class="stat-card sc-green"><div class="stat-val" id="st-wins" style="color:var(--green)">0</div><div class="stat-lbl">Winners</div></div>
+    <div class="stat-card sc-red"><div class="stat-val" id="st-losses" style="color:var(--red)">0</div><div class="stat-lbl">Losers</div></div>
+    <div class="stat-card sc-gold"><div class="stat-val" id="st-winrate" style="color:var(--gold)">—%</div><div class="stat-lbl">Win Rate</div></div>
+    <div class="stat-card sc-teal"><div class="stat-val" id="st-pnl" style="color:var(--teal)">0R</div><div class="stat-lbl">Total P&L</div></div>
+    <div class="stat-card sc-purple"><div class="stat-val" id="st-rr" style="color:var(--purple)">—</div><div class="stat-lbl">Ø RR</div></div>
+  </div>
+</div>
+
+<!-- NEW TRADE -->
+<div class="sec" id="new-trade">
+  <div class="sec-head"><div class="sec-num">NEU</div><h2 class="sec-title">Log a <em>Trade</em></h2></div>
+  <p>Document every trade — paper or live. Honesty here matters more than good numbers.</p>
+
+  <div class="trade-form">
+    <div class="tf-title">📝 TRADE TEMPLATE — COMPLETE ALL FIELDS</div>
+
+    <div class="tf-grid">
+      <div class="tf-field"><div class="tf-label">Date</div><input type="date" class="tf-input" id="tf-date"></div>
+      <div class="tf-field"><div class="tf-label">Asset / Instrument</div><input type="text" class="tf-input" id="tf-asset" placeholder="e.g. EUR/USD, BTC, AAPL"></div>
+      <div class="tf-field">
+        <div class="tf-label">Trade Type</div>
+        <select class="tf-select" id="tf-type">
+          <option value="paper">📄 Paper Trade</option>
+          <option value="real">💰 Live Trade</option>
+        </select>
+      </div>
+      <div class="tf-field">
+        <div class="tf-label">Direction</div>
+        <select class="tf-select" id="tf-dir">
+          <option value="long">📈 Long (Buy)</option>
+          <option value="short">📉 Short (Sell)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tf-grid">
+      <div class="tf-field"><div class="tf-label">Entry Price</div><input type="number" class="tf-input" id="tf-entry" placeholder="0.00" step="any"></div>
+      <div class="tf-field"><div class="tf-label">Stop Loss</div><input type="number" class="tf-input" id="tf-stop" placeholder="0.00" step="any"></div>
+      <div class="tf-field"><div class="tf-label">Take Profit</div><input type="number" class="tf-input" id="tf-tp" placeholder="0.00" step="any"></div>
+      <div class="tf-field"><div class="tf-label">Exit Price</div><input type="number" class="tf-input" id="tf-exit" placeholder="Leave empty = still open" step="any"></div>
+    </div>
+
+    <div class="tf-grid">
+      <div class="tf-field">
+        <div class="tf-label">Time Window / Session</div>
+        <select class="tf-select" id="tf-session">
+          <option value="">— Select Session —</option>
+          <option value="London Open">London Open (08:00–09:30)</option>
+          <option value="London">Europa/London (09:30–14:30)</option>
+          <option value="NY Open">NY Open (14:30–16:00)</option>
+          <option value="Overlap">Overlap L/NY (14:30–17:00)</option>
+          <option value="NY">New York (16:00–22:00)</option>
+          <option value="Asien">Asien (01:00–08:00)</option>
+        </select>
+      </div>
+      <div class="tf-field">
+        <div class="tf-label">Timeframe (Entry)</div>
+        <select class="tf-select" id="tf-tf">
+          <option value="1m">1 Minute</option>
+          <option value="5m">5 Minuten</option>
+          <option value="15m" selected>15 Minuten</option>
+          <option value="1h">1 Stunde</option>
+          <option value="4h">4 Stunden</option>
+          <option value="Daily">Daily</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Confluence Check -->
+    <div class="conf-check">
+      <div class="cc-title"><span>✅ CONFLUENCE FACTORS</span><span id="cc-count" style="color:var(--teal)">0/8</span></div>
+      <div class="cc-items">
+        <div class="cc-item" onclick="toggleCC(this)"><div class="cc-box"></div><div class="cc-txt">HTF Bias confirmed</div></div>
+        <div class="cc-item" onclick="toggleCC(this)"><div class="cc-box"></div><div class="cc-txt">Market Structure aligned</div></div>
+        <div class="cc-item" onclick="toggleCC(this)"><div class="cc-box"></div><div class="cc-txt">Entry at S/R / OB / FVG</div></div>
+        <div class="cc-item" onclick="toggleCC(this)"><div class="cc-box"></div><div class="cc-txt">Fibonacci Confluence</div></div>
+        <div class="cc-item" onclick="toggleCC(this)"><div class="cc-box"></div><div class="cc-txt">Candlestick Confirmation</div></div>
+        <div class="cc-item" onclick="toggleCC(this)"><div class="cc-box"></div><div class="cc-txt">Volume aligned</div></div>
+        <div class="cc-item" onclick="toggleCC(this)"><div class="cc-box"></div><div class="cc-txt">Correct time window</div></div>
+        <div class="cc-item" onclick="toggleCC(this)"><div class="cc-box"></div><div class="cc-txt">No news risk</div></div>
+      </div>
+    </div>
+
+    <!-- Emotion Sliders -->
+    <div class="emo-slider-wrap">
+      <div class="emo-sl-label"><span>Emotional state at entry</span><span id="emo-val" style="color:var(--teal)">5 / Neutral</span></div>
+      <input type="range" class="emo-slider" id="tf-emotion" min="1" max="10" value="5" oninput="updateEmo(this.value)"
+        style="background:linear-gradient(90deg,var(--red),var(--gold),var(--green))">
+      <div style="background:linear-gradient(90deg,var(--red),var(--gold),var(--green));height:4px;border-radius:2px;margin-top:-2px;opacity:.3;pointer-events:none"></div>
+      <div class="emo-indicators"><span>😤 Negative</span><span>😐 Neutral</span><span>😊 Positive</span></div>
+    </div>
+
+    <div class="tf-field" style="margin-bottom:14px">
+      <div class="tf-label">Trade Rationale (Why this trade?)</div>
+      <textarea class="tf-textarea" id="tf-reason" placeholder="Describe: HTF bias, the setup, why you entered, what you see..."></textarea>
+    </div>
+    <div class="tf-field" style="margin-bottom:14px">
+      <div class="tf-label">Lessons / Mistakes (after trade closes)</div>
+      <textarea class="tf-textarea" id="tf-lesson" placeholder="What went well? What would you do differently? What emotion played a role?"></textarea>
+    </div>
+
+    <button class="submit-btn" onclick="saveTrade()">✓ Save Trade</button>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="sec" id="history">
+  <div class="sec-head"><div class="sec-num">VERLAUF</div><h2 class="sec-title">Trade <em>History</em></h2></div>
+  <div class="trades-wrap">
+    <div class="trades-head">
+      <h3>ALL TRADES</h3>
+      <div class="trades-filters">
+        <button class="t-filter on" onclick="filterTrades('all',this)">ALLE</button>
+        <button class="t-filter" onclick="filterTrades('paper',this)">PAPER</button>
+        <button class="t-filter" onclick="filterTrades('real',this)">REAL</button>
+        <button class="t-filter" onclick="filterTrades('win',this)">WIN</button>
+        <button class="t-filter" onclick="filterTrades('loss',this)">LOSS</button>
+      </div>
+    </div>
+    <div class="trades-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+      <table class="trades-table">
+        <thead><tr>
+          <th>Date</th><th>Asset</th><th>Typ</th><th>Dir</th><th>Entry</th><th>Stop</th><th>Exit</th><th>R/R</th><th>Result</th><th>Emotion</th><th>Session</th><th></th>
+        </tr></thead>
+        <tbody id="trades-tbody"><tr><td colspan="12" style="text-align:center;color:var(--td);padding:24px;font-style:italic">No trades yet. Add your first trade above.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- EQUITY -->
+<div class="sec" id="equity">
+  <div class="sec-head"><div class="sec-num">EQUITY</div><h2 class="sec-title">Your <em>Equity Curve</em></h2></div>
+  <p>The equity curve shows your cumulative R-returns over time. A steadily rising curve demonstrates consistency — that is the goal.</p>
+  <div class="equity-chart">
+    <div class="ec-title">📈 CUMULATIVE R-RETURN — ALL CLOSED TRADES</div>
+    <div class="chart-area"><canvas id="equity-canvas"></canvas></div>
+  </div>
+</div>
+
+<!-- WEEKLY -->
+<div class="sec" id="weekly">
+  <div class="sec-head"><div class="sec-num">WOCHE</div><h2 class="sec-title">Weekly <em>Performance</em></h2></div>
+  <div class="week-sum">
+    <div class="ws-title">📅 CURRENT WEEK — R-PERFORMANCE</div>
+    <div class="ws-days" id="ws-days">
+      <div class="ws-day neu"><div class="ws-day-name">MO</div><div class="ws-day-val">—</div><div class="ws-day-num">0 Trades</div></div>
+      <div class="ws-day neu"><div class="ws-day-name">DI</div><div class="ws-day-val">—</div><div class="ws-day-num">0 Trades</div></div>
+      <div class="ws-day neu"><div class="ws-day-name">MI</div><div class="ws-day-val">—</div><div class="ws-day-num">0 Trades</div></div>
+      <div class="ws-day neu"><div class="ws-day-name">DO</div><div class="ws-day-val">—</div><div class="ws-day-num">0 Trades</div></div>
+      <div class="ws-day neu"><div class="ws-day-name">FR</div><div class="ws-day-val">—</div><div class="ws-day-num">0 Trades</div></div>
+      <div class="ws-day neu"><div class="ws-day-name">SA</div><div class="ws-day-val">—</div><div class="ws-day-num">0 Trades</div></div>
+      <div class="ws-day neu"><div class="ws-day-name">SO</div><div class="ws-day-val">—</div><div class="ws-day-num">0 Trades</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION -->
+<div class="sec" id="reflection">
+  <div class="sec-head"><div class="sec-num">REFLEXION</div><h2 class="sec-title">Daily <em>Reflection</em></h2></div>
+  <p>Write daily after trading. These notes are your most valuable learning source — more honest than any external analysis.</p>
+  <div class="reflection">
+    <div class="ref-title">✍️ DAILY REFLECTION — <span id="ref-date"></span></div>
+    <div class="ref-grid">
+      <div class="ref-field"><div class="ref-label">What went well today?</div><textarea class="ref-textarea" id="ref-good" placeholder="Which decisions and executions were strong?"></textarea></div>
+      <div class="ref-field"><div class="ref-label">What could I have done better?</div><textarea class="ref-textarea" id="ref-improve" placeholder="Honest self-analysis — without self-flagellation"></textarea></div>
+      <div class="ref-field"><div class="ref-label">Dominant emotion today</div><textarea class="ref-textarea" id="ref-emotion" placeholder="What did I feel? How did it affect my decisions?"></textarea></div>
+      <div class="ref-field"><div class="ref-label">Focus for tomorrow</div><textarea class="ref-textarea" id="ref-tomorrow" placeholder="What is the one thing I want to improve tomorrow?"></textarea></div>
+    </div>
+    <button class="save-ref-btn" onclick="saveReflection()">💾 Save Reflection</button>
+    <div id="ref-saved" style="display:none;margin-top:12px;padding:12px;background:var(--gdim);border-radius:7px;border-left:3px solid var(--green);font-size:13px;color:var(--green)">✓ Reflection saved — Keep it up!</div>
+  </div>
+
+  <div class="print-zone">
+    <div class="pz-title">EXPORT & PRINT</div>
+    <div class="pz-desc">Print your journal or export trade data as CSV for further analysis.</div>
+    <button class="print-btn" onclick="window.print()">🖨 Print Journal</button>
+    <button class="export-btn" onclick="exportCSV()">📊 Export as CSV</button>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');const id=e.target.id;document.querySelectorAll('.nav-a').forEach(n=>n.classList.toggle('on',n.getAttribute('href')==='#'+id))}})},{threshold:.07});
+document.querySelectorAll('.sec').forEach(s=>obs.observe(s));
+
+// Init date
+document.getElementById('tf-date').value=new Date().toISOString().split('T')[0];
+document.getElementById('ref-date').textContent=new Date().toLocaleDateString('de-DE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+// TRADES DATA
+let trades=JSON.parse(localStorage.getItem('apex-trades-en')||'[]');
+let reflections=JSON.parse(localStorage.getItem('apex-reflections-en')||'{}');
+
+// Load saved reflection
+const today=new Date().toISOString().split('T')[0];
+if(reflections[today]){
+  const r=reflections[today];
+  document.getElementById('ref-good').value=r.good||'';
+  document.getElementById('ref-improve').value=r.improve||'';
+  document.getElementById('ref-emotion').value=r.emotion||'';
+  document.getElementById('ref-tomorrow').value=r.tomorrow||'';
+}
+
+function updateEmo(v){
+  const labels=['','😤 Very negative','😠 Negative','😟 Slightly negative','😕 Unsettled','😐 Neutral','🙂 Good','😊 Positive','😄 Sehr positiv','🤩 Euphoric','🚀 Dangerously overconfident'];
+  document.getElementById('emo-val').textContent=v+' / '+labels[+v];
+}
+
+function toggleCC(item){
+  item.classList.toggle('on');
+  const done=document.querySelectorAll('.cc-item.on').length;
+  document.getElementById('cc-count').textContent=done+'/8';
+}
+
+function calcR(entry,stop,exit,dir){
+  if(!exit||!stop||!entry)return null;
+  const riskPips=Math.abs(entry-stop);
+  if(riskPips===0)return null;
+  const pnlPips=dir==='long'?exit-entry:entry-exit;
+  return+(pnlPips/riskPips).toFixed(2);
+}
+
+function saveTrade(){
+  const d=document.getElementById('tf-date').value;
+  const asset=document.getElementById('tf-asset').value.trim();
+  const type=document.getElementById('tf-type').value;
+  const dir=document.getElementById('tf-dir').value;
+  const entry=+document.getElementById('tf-entry').value;
+  const stop=+document.getElementById('tf-stop').value;
+  const tp=+document.getElementById('tf-tp').value;
+  const exit=+document.getElementById('tf-exit').value||null;
+  const session=document.getElementById('tf-session').value;
+  const tf=document.getElementById('tf-tf').value;
+  const emotion=+document.getElementById('tf-emotion').value;
+  const reason=document.getElementById('tf-reason').value;
+  const lesson=document.getElementById('tf-lesson').value;
+  const confluence=document.querySelectorAll('.cc-item.on').length;
+
+  if(!d||!asset||!entry||!stop){showToast('⚠️ Date, asset, entry and stop are required fields');return}
+
+  const r=exit?calcR(entry,stop,exit,dir):null;
+  const result=exit?(r>0?'win':r<0?'loss':'breakeven'):'open';
+
+  const trade={id:Date.now(),date:d,asset,type,dir,entry,stop,tp,exit,session,tf,emotion,reason,lesson,confluence,r,result};
+  trades.push(trade);
+  localStorage.setItem('apex-trades-en',JSON.stringify(trades));
+
+  // Reset form
+  document.getElementById('tf-asset').value='';
+  document.getElementById('tf-entry').value='';
+  document.getElementById('tf-stop').value='';
+  document.getElementById('tf-tp').value='';
+  document.getElementById('tf-exit').value='';
+  document.getElementById('tf-reason').value='';
+  document.getElementById('tf-lesson').value='';
+  document.getElementById('tf-emotion').value=5;
+  updateEmo(5);
+  document.querySelectorAll('.cc-item.on').forEach(i=>i.classList.remove('on'));
+  document.getElementById('cc-count').textContent='0/8';
+
+  renderAll();
+  showToast('✓ Trade saved!');
+}
+
+function deleteTrade(id){
+  trades=trades.filter(t=>t.id!==id);
+  localStorage.setItem('apex-trades-en',JSON.stringify(trades));
+  renderAll();
+}
+
+let currentFilter='all';
+function filterTrades(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.t-filter').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderTable();
+}
+
+function renderTable(){
+  const tbody=document.getElementById('trades-tbody');
+  let filtered=trades;
+  if(currentFilter==='paper')filtered=trades.filter(t=>t.type==='paper');
+  else if(currentFilter==='real')filtered=trades.filter(t=>t.type==='real');
+  else if(currentFilter==='win')filtered=trades.filter(t=>t.result==='win');
+  else if(currentFilter==='loss')filtered=trades.filter(t=>t.result==='loss');
+
+  if(filtered.length===0){tbody.innerHTML='<tr><td colspan="12" style="text-align:center;color:var(--td);padding:24px;font-style:italic">No trades found.</td></tr>';return}
+
+  const emoLabels=['','😤','😠','😟','😕','😐','🙂','😊','😄','🤩','🚀'];
+  tbody.innerHTML=filtered.slice().reverse().map(t=>{
+    const rTag=t.result==='win'?'t-win':t.result==='loss'?'t-loss':t.result==='open'?'t-open':'';
+    const rTxt=t.result==='win'?`+${t.r}R`:t.result==='loss'?`${t.r}R`:t.result==='open'?'OFFEN':'0R';
+    const dirTag=t.dir==='long'?'t-long':'t-short';
+    const typeBg=t.type==='paper'?'rgba(212,168,67,.15)':'rgba(0,200,168,.1)';
+    const typeC=t.type==='paper'?'var(--gold)':'var(--teal)';
+    return`<tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${t.date}</td>
+      <td><strong style="color:var(--t)">${t.asset}</strong></td>
+      <td><span style="background:${typeBg};color:${typeC};padding:2px 7px;border-radius:3px;font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:1px">${t.type.toUpperCase()}</span></td>
+      <td><span class="t-tag ${dirTag}">${t.dir.toUpperCase()}</span></td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${t.entry}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red)">${t.stop}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${t.exit||'—'}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)">${t.tp?'1:'+(Math.abs((t.tp-t.entry)/(t.entry-t.stop)).toFixed(1)):'—'}</td>
+      <td><span class="t-tag ${rTag}">${rTxt}</span></td>
+      <td style="font-size:16px">${emoLabels[t.emotion]||'😐'}</td>
+      <td style="font-size:11px;color:var(--td)">${t.session||'—'}</td>
+      <td><button class="del-btn" onclick="deleteTrade(${t.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderStats(){
+  const closed=trades.filter(t=>t.result!=='open');
+  const wins=trades.filter(t=>t.result==='win');
+  const losses=trades.filter(t=>t.result==='loss');
+  const totalR=closed.reduce((sum,t)=>sum+(t.r||0),0);
+  const winrate=closed.length?Math.round(wins.length/closed.length*100):0;
+  const avgR=closed.length?(totalR/closed.length).toFixed(2):0;
+
+  document.getElementById('st-total').textContent=trades.length;
+  document.getElementById('st-wins').textContent=wins.length;
+  document.getElementById('st-losses').textContent=losses.length;
+  document.getElementById('st-winrate').textContent=closed.length?winrate+'%':'—%';
+  document.getElementById('st-pnl').textContent=(totalR>=0?'+':'')+totalR.toFixed(2)+'R';
+  document.getElementById('st-pnl').style.color=totalR>=0?'var(--green)':'var(--red)';
+  document.getElementById('st-rr').textContent=closed.length?avgR+'R':'—';
+
+  // sidebar counter
+  const todayTrades=trades.filter(t=>t.date===new Date().toISOString().split('T')[0]);
+  document.getElementById('pct').textContent=todayTrades.length;
+  document.getElementById('pfill').style.width=Math.min(todayTrades.length*20,100)+'%';
+}
+
+function renderEquity(){
+  const canvas=document.getElementById('equity-canvas');
+  const ctx=canvas.getContext('2d');
+  const closed=trades.filter(t=>t.result!=='open'&&t.r!==null).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  canvas.width=canvas.offsetWidth*window.devicePixelRatio||600;
+  canvas.height=canvas.offsetHeight*window.devicePixelRatio||160;
+  ctx.scale(window.devicePixelRatio||1,window.devicePixelRatio||1);
+  const W=canvas.offsetWidth||600,H=canvas.offsetHeight||160;
+  ctx.clearRect(0,0,W,H);
+
+  if(closed.length<2){
+    ctx.fillStyle='rgba(255,255,255,.15)';ctx.font='13px Outfit';ctx.textAlign='center';
+    ctx.fillText('Not enough closed trades yet for the equity curve',W/2,H/2);return;
+  }
+
+  let cum=0;const points=[0,...closed.map(t=>{cum+=t.r;return+cum.toFixed(2)})];
+  const min=Math.min(...points),max=Math.max(...points);
+  const range=max-min||1;
+  const pad=20;
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  for(let i=0;i<5;i++){const y=pad+(H-2*pad)*i/4;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+
+  // Zero line
+  const zeroY=pad+(H-2*pad)*(max/(range));
+  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(0,zeroY);ctx.lineTo(W,zeroY);ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Equity line
+  const pts=points.map((v,i)=>({x:pad+(W-2*pad)*i/(points.length-1),y:pad+(H-2*pad)*(max-v)/range}));
+  const isPos=points[points.length-1]>=0;
+  const lineColor=isPos?'#22C97A':'#E84040';
+
+  // Fill
+  ctx.beginPath();ctx.moveTo(pts[0].x,zeroY);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,zeroY);ctx.closePath();
+  ctx.fillStyle=isPos?'rgba(34,201,122,.08)':'rgba(232,64,64,.08)';ctx.fill();
+
+  // Line
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=lineColor;ctx.lineWidth=2;ctx.stroke();
+
+  // Dots
+  pts.forEach((p,i)=>{if(i===0||i===pts.length-1||closed[i-1]?.result==='win'||closed[i-1]?.result==='loss'){ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fillStyle=i===0?'var(--teal)':closed[i-1]?.result==='win'?'#22C97A':'#E84040';ctx.fill()}});
+}
+
+function renderWeekly(){
+  const dayNames=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  const now=new Date();
+  const dayOfWeek=now.getDay();
+  const monday=new Date(now);
+  monday.setDate(now.getDate()-((dayOfWeek+6)%7));
+
+  const days=document.getElementById('ws-days').children;
+  for(let i=0;i<7;i++){
+    const d=new Date(monday);d.setDate(monday.getDate()+i);
+    const ds=d.toISOString().split('T')[0];
+    const dayTrades=trades.filter(t=>t.date===ds&&t.result!=='open');
+    const r=dayTrades.reduce((s,t)=>s+(t.r||0),0);
+    const cls=dayTrades.length===0?'neu':r>0?'pos':r<0?'neg':'neu';
+    days[i].className='ws-day '+cls;
+    days[i].querySelector('.ws-day-val').textContent=dayTrades.length?((r>=0?'+':'')+r.toFixed(1)+'R'):'—';
+    days[i].querySelector('.ws-day-num').textContent=dayTrades.length+' Trade'+(dayTrades.length!==1?'s':'');
+  }
+}
+
+function renderAll(){renderStats();renderTable();renderEquity();renderWeekly()}
+renderAll();
+
+function saveReflection(){
+  const d=new Date().toISOString().split('T')[0];
+  reflections[d]={good:document.getElementById('ref-good').value,improve:document.getElementById('ref-improve').value,emotion:document.getElementById('ref-emotion').value,tomorrow:document.getElementById('ref-tomorrow').value};
+  localStorage.setItem('apex-reflections-en',JSON.stringify(reflections));
+  const saved=document.getElementById('ref-saved');saved.style.display='block';
+  setTimeout(()=>saved.style.display='none',3000);
+}
+
+function exportCSV(){
+  const headers=['Date','Asset','Type','Direction','Entry','Stop','TP','Exit','R','Result','Session','TF','Emotion','Confluence','Rationale','Lessons'];
+  const rows=trades.map(t=>[t.date,t.asset,t.type,t.dir,t.entry,t.stop,t.tp||'',t.exit||'',t.r||'',t.result,t.session||'',t.tf||'',t.emotion,t.confluence,'"'+((t.reason||'').replace(/"/g,"'"))+'"','"'+((t.lesson||'').replace(/"/g,"'"))+'"']);
+  const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='apex-trades-'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+  showToast('✓ CSV exported!');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),2500);
+}
+
+window.addEventListener('resize',()=>renderEquity());
+</script>
+</body>
+</html>

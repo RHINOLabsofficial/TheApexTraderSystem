@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>APEX TRADER — Module 6: ICT Deep Dive</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+:root{
+  --bg:#020208;--s1:#06060F;--s2:#0A0A18;--s3:#0E0E20;--s4:#141430;
+  --gold:#C8922A;--gold2:#E8B84B;--gold3:#F5D07A;
+  --gdim:rgba(200,146,42,.1);--gbdr:rgba(200,146,42,.22);--gbdr2:rgba(200,146,42,.38);
+  --cream:#F0E8D8;--accent:#00D4FF;--adim:rgba(0,212,255,.1);--abdr:rgba(0,212,255,.22);
+  --red:#D64040;--rdim:rgba(214,64,64,.1);--rbdr:rgba(214,64,64,.22);
+  --green:#1DB870;--gndim:rgba(29,184,112,.1);--gnbdr:rgba(29,184,112,.22);
+  --purple:#9B6DFF;--pdim:rgba(155,109,255,.1);--pbdr:rgba(155,109,255,.25);
+  --silver:#8888AA;--silver2:#AAAACC;
+  --t:#E8E8F0;--td:#5A5A80;--tf:#1A1A30;
+  --border:rgba(255,255,255,.045);--border2:rgba(255,255,255,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font-family:'Outfit',sans-serif;overflow-x:hidden;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9998}
+
+/* SIDEBAR */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:268px;background:rgba(4,4,12,.97);border-right:1px solid var(--border);z-index:100;display:flex;flex-direction:column;backdrop-filter:blur(20px)}
+.sb-header{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sb-logo-mark{width:26px;height:26px;border:1px solid var(--abdr);border-radius:5px;display:flex;align-items:center;justify-content:center}
+.sb-logo-mark svg{width:13px;height:13px}
+.sb-logo-name{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--t)}
+.sb-logo-name span{color:var(--accent)}
+.sb-mod-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.sb-mod-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+.sb-mod-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--cream);line-height:1.2}
+.sb-nav{flex:1;overflow-y:auto;padding:14px 8px}
+.sb-nav::-webkit-scrollbar{width:2px}.sb-nav::-webkit-scrollbar-thumb{background:var(--tf)}
+.nav-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--tf);padding:10px 14px 4px;display:block;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:6px;text-decoration:none;font-size:12.5px;color:var(--td);transition:all .2s;border-left:2px solid transparent;margin:1px 0}
+.nav-item:hover{background:var(--s3);color:var(--t)}.nav-item.active{background:var(--adim);color:var(--accent);border-left-color:var(--accent)}
+.nav-item .ni{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.sb-mods{padding:10px 8px;border-top:1px solid var(--border)}
+.sb-mod-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--tf);padding:8px 14px 4px;display:block;text-transform:uppercase}
+.sb-mod-link{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:5px;text-decoration:none;font-size:11px;color:var(--td);transition:all .2s;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+.sb-mod-link:hover{background:var(--s3);color:var(--t)}.sb-mod-link.cur{color:var(--accent)}
+.sb-prog{padding:16px 20px;border-top:1px solid var(--border)}
+.sp-row{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--td);margin-bottom:7px}
+.sp-track{height:2px;background:var(--s3);border-radius:1px;overflow:hidden}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--accent),#00A8CC);border-radius:1px;width:0%;transition:width .7s}
+.nav-toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;cursor:pointer;color:var(--t);font-size:15px}
+@media(max-width:960px){.sidebar{transform:translateX(-100%);transition:transform .3s}.sidebar.open{transform:translateX(0)}.main{margin-left:0!important;width:100%!important}.hero{padding:80px 20px 36px!important;min-height:auto!important}.content{padding:0 20px 80px!important}.nav-toggle{display:flex!important}html,body{overflow-x:hidden;max-width:100%}}
+@media(max-width:480px){.hero-title{font-size:clamp(36px,11vw,60px)!important}.cards{grid-template-columns:1fr!important}.phases{grid-template-columns:1fr!important}}
+
+/* MAIN */
+.main{margin-left:268px;min-height:100vh;position:relative;z-index:1}
+.hero{position:relative;min-height:480px;display:flex;flex-direction:column;justify-content:flex-end;padding:80px 72px 56px;overflow:hidden}
+.hero-amb{position:absolute;inset:0;background:radial-gradient(ellipse 65% 55% at 55% 50%,rgba(0,212,255,.05),transparent 70%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);background-size:56px 56px}
+.eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:22px;position:relative;z-index:1}
+.ey-line{width:26px;height:1px;background:var(--accent)}
+.ey-text{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--accent)}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,7.5vw,96px);font-weight:300;letter-spacing:-1px;line-height:.9;position:relative;z-index:1}
+.ht-m{display:block;color:var(--cream)}.ht-a{display:block;color:var(--accent);font-style:italic}.ht-s{display:block;color:rgba(232,232,240,.22);font-weight:300}
+.hero-desc{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:var(--silver);max-width:560px;margin-top:18px;line-height:1.65;position:relative;z-index:1}
+.hero-desc em{color:var(--gold2);font-style:normal}
+.hero-meta{display:flex;gap:36px;margin-top:32px;position:relative;z-index:1;flex-wrap:wrap}
+.hm-val{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:var(--accent);line-height:1}
+.hm-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--td);margin-top:3px}
+
+/* CONTENT */
+.content{padding:0 72px 120px}
+.sec{margin-bottom:80px;opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s}
+.sec.vis{opacity:1;transform:translateY(0)}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.sec-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--accent);background:var(--adim);border:1px solid var(--abdr);padding:4px 10px;border-radius:2px;flex-shrink:0}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,3.5vw,40px);font-weight:300;color:var(--cream);line-height:1.05}
+.sec-title em{color:var(--accent);font-style:italic}
+.sec-rule{height:1px;background:linear-gradient(90deg,var(--border2),transparent);margin-bottom:28px}
+
+p{font-size:15px;color:var(--td);line-height:1.85;margin-bottom:16px}
+p strong{color:var(--t)}p em{color:var(--gold2);font-style:italic}
+h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--cream);margin:26px 0 12px}
+
+/* AHA */
+.aha{background:linear-gradient(135deg,rgba(0,212,255,.07),rgba(0,212,255,.03));border:1px solid var(--abdr);border-radius:12px;padding:26px 30px;margin:28px 0;position:relative;overflow:hidden}
+.aha::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.aha-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.aha-lbl::before{content:'';width:14px;height:1px;background:var(--accent)}
+.aha h4{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;font-style:italic;color:var(--gold2);margin-bottom:9px}
+.aha p{font-size:14px;color:var(--td);margin:0;line-height:1.75}
+
+/* WARN */
+.warn{background:var(--rdim);border:1px solid var(--rbdr);border-radius:8px;padding:16px 20px;margin:20px 0;display:flex;gap:12px;align-items:flex-start}
+.warn-ic{font-size:16px;flex-shrink:0;margin-top:2px}
+.warn p{font-size:13.5px;color:var(--td);margin:0}.warn strong{color:var(--red)}
+
+/* INFO */
+.info{background:var(--adim);border:1px solid var(--abdr);border-radius:8px;padding:16px 20px;margin:20px 0;display:flex;gap:12px;align-items:flex-start}
+.info p{font-size:13.5px;color:var(--td);margin:0}.info strong{color:var(--accent)}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:22px 0}
+.card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:20px;transition:all .25s;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .25s}
+.card:hover{border-color:var(--abdr);transform:translateY(-2px)}.card:hover::after{opacity:1}
+.card-ic{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:12px;border:1px solid var(--border);background:var(--s3)}
+.ic-acc{background:var(--adim);border-color:var(--abdr)}.ic-gold{background:var(--gdim);border-color:var(--gbdr)}.ic-red{background:var(--rdim);border-color:var(--rbdr)}.ic-green{background:var(--gndim);border-color:var(--gnbdr)}.ic-purple{background:var(--pdim);border-color:var(--pbdr)}
+.card h4{font-size:14px;font-weight:600;margin-bottom:7px;color:var(--t)}
+.card p{font-size:12.5px;color:var(--td);line-height:1.65;margin:0}
+
+/* ACCORDION */
+.acc-wrap{margin:20px 0}
+.acc-item{border:1px solid var(--border);border-radius:8px;margin-bottom:5px;overflow:hidden;transition:border-color .2s}
+.acc-item.open{border-color:var(--abdr)}
+.acc-head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--s2);user-select:none;transition:background .2s}
+.acc-head:hover{background:var(--s3)}
+.acc-ico{width:28px;height:28px;border-radius:7px;background:var(--s3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;transition:all .2s}
+.acc-item.open .acc-ico{background:var(--adim);border-color:var(--abdr)}
+.acc-ttl{flex:1;font-size:13.5px;font-weight:600;color:var(--t)}
+.acc-arr{color:var(--td);transition:transform .3s;font-size:11px}
+.acc-item.open .acc-arr{transform:rotate(180deg);color:var(--accent)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-inner{padding:18px 18px 18px 58px;font-size:13.5px;color:var(--td);line-height:1.75;border-top:1px solid var(--border)}
+.acc-inner ul{padding-left:16px;margin-top:8px}.acc-inner ul li{margin-bottom:8px;line-height:1.6}
+.acc-inner strong{color:var(--t)}.acc-inner em{color:var(--gold2)}
+.acc-inner p{margin-bottom:10px;font-size:13.5px}
+
+/* CONCEPT VISUALISER */
+.concept-vis{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:22px;margin:22px 0}
+.cv-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--silver);margin-bottom:16px}
+.cv-svg{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.cv-svg svg{width:100%;height:200px;display:block}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:20px 0;font-size:13px}
+.tbl th{background:var(--s3);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border2)}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--td);vertical-align:top}
+.tbl tr:hover td{background:var(--s2);color:var(--t)}
+.tag{display:inline-block;padding:2px 8px;border-radius:2px;font-size:8px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.tag-bull{background:var(--gndim);color:var(--green);border:1px solid var(--gnbdr)}
+.tag-bear{background:var(--rdim);color:var(--red);border:1px solid var(--rbdr)}
+.tag-neu{background:var(--adim);color:var(--accent);border:1px solid var(--abdr)}
+
+/* INSIGHT */
+.insight{background:var(--s2);border:1px solid var(--border);border-left:2px solid var(--accent);padding:18px 22px;margin:22px 0}
+.ins-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.insight p{font-size:13.5px;color:var(--td);margin:0}
+
+/* STEP FLOW */
+.step-flow{display:flex;flex-direction:column;gap:0;margin:22px 0}
+.step{display:flex;gap:18px;padding:16px 0;border-bottom:1px solid var(--border);position:relative}
+.step:last-child{border-bottom:none}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--adim);border:1px solid var(--abdr);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;margin-top:2px}
+.step-body{flex:1}
+.step-title{font-size:14px;font-weight:700;color:var(--t);margin-bottom:5px}
+.step-desc{font-size:13px;color:var(--td);line-height:1.65}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+</style>
+</head>
+<body>
+<button class="nav-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<nav class="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">
+      <div class="sb-logo-mark"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1L14 8L8 15L2 8Z" stroke="#00D4FF" stroke-width="1.2"/><path d="M8 4L11 8L8 12L5 8Z" fill="#00D4FF" opacity=".4"/></svg></div>
+      <div class="sb-logo-name">APEX<span>TRADER</span></div>
+    </div>
+    <div class="sb-mod-tag">◆ Module 06 of 07</div>
+    <div class="sb-mod-title">ICT Deep Dive &<br>Smart Money</div>
+  </div>
+  <div class="sb-nav">
+    <span class="nav-lbl">Chapters</span>
+    <a href="#ict-philosophy" class="nav-item active"><span class="ni">🎯</span> ICT Philosophy</a>
+    <a href="#liquidity" class="nav-item"><span class="ni">💧</span> Liquidity Theory</a>
+    <a href="#order-blocks" class="nav-item"><span class="ni">📦</span> Order Blocks</a>
+    <a href="#fvg" class="nav-item"><span class="ni">🌀</span> Fair Value Gaps</a>
+    <a href="#ict-entries" class="nav-item"><span class="ni">🎯</span> ICT Entry Models</a>
+    <a href="#kill-zones" class="nav-item"><span class="ni">⏰</span> Kill Zones & Sessions</a>
+    <a href="#delivery" class="nav-item"><span class="ni">📐</span> Price Delivery</a>
+    <a href="#pd-arrays" class="nav-item"><span class="ni">🔢</span> PD Arrays</a>
+    <a href="#model" class="nav-item"><span class="ni">🗺</span> ICT Trade Model</a>
+  </div>
+  <div class="sb-mods">
+    <span class="sb-mod-lbl">All Modules</span>
+    <a href="index.html" class="sb-mod-link">← Hub</a>
+    <a href="modul-1.html" class="sb-mod-link">◆ M1 — Economics</a>
+    <a href="modul-2.html" class="sb-mod-link">◆ M2 — Analysis</a>
+    <a href="modul-3.html" class="sb-mod-link">◆ M3 — Psychology</a>
+    <a href="modul-4.html" class="sb-mod-link">◆ M4 — Journal</a>
+    <a href="modul-5.html" class="sb-mod-link">◆ M5 — Lexicon</a>
+    <a href="modul-6.html" class="sb-mod-link cur">◆ M6 — ICT Deep Dive</a>
+    <a href="modul-7.html" class="sb-mod-link">◆ M7 — Edge & Risk</a>
+  </div>
+  <div class="sb-prog">
+    <div class="sp-row"><span>Progress</span><span id="pct">0%</span></div>
+    <div class="sp-track"><div class="sp-fill" id="pfill"></div></div>
+  </div>
+</nav>
+
+<div class="main">
+<div class="hero">
+  <div class="hero-amb"></div><div class="hero-grid"></div>
+  <div class="eyebrow"><div class="ey-line"></div><div class="ey-text">Apex Trader · Module 06</div></div>
+  <h1 class="hero-title"><span class="ht-m">ICT</span><span class="ht-a">Deep Dive</span><span class="ht-s">Smart Money Concepts</span></h1>
+  <p class="hero-desc">Inner Circle Trader methodology — the framework that explains <em>why</em> price moves where it does, <em>when</em> it does, and <em>who</em> is behind it.</p>
+  <div class="hero-meta">
+    <div class="hm-stat"><div class="hm-val">9</div><div class="hm-lbl">Chapters</div></div>
+    <div class="hm-stat"><div class="hm-val">15+</div><div class="hm-lbl">ICT Concepts</div></div>
+    <div class="hm-stat"><div class="hm-val">1</div><div class="hm-lbl">Complete Trade Model</div></div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- PHILOSOPHY -->
+<div class="sec" id="ict-philosophy">
+  <div class="sec-head"><div class="sec-num">01</div><h2 class="sec-title">ICT <em>Philosophy</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>ICT (Inner Circle Trader) was developed by Michael J. Huddleston. The core premise: <strong>price is not random.</strong> It is algorithmically delivered between price levels by institutional programs — and those programs leave predictable signatures that a trained eye can read.</p>
+  <div class="aha">
+    <div class="aha-lbl">The Core Paradigm Shift</div>
+    <h4>Stop thinking about support and resistance. Start thinking about liquidity.</h4>
+    <p>Classic TA sees double tops as "resistance." ICT sees accumulated stop-loss orders waiting to be hunted. Classic TA sees a trendline break as a "signal." ICT sees a liquidity delivery event. This single reframe changes every chart you will ever read.</p>
+  </div>
+  <p>ICT's framework rests on three principles: <strong>(1) Price seeks liquidity</strong> — it moves toward where orders are concentrated. <strong>(2) Price delivers algorithmically</strong> — patterns repeat because the same algorithms execute at the same conditions. <strong>(3) Time and price are inseparable</strong> — the best setups occur at the intersection of the right price level and the right time window (Kill Zone).</p>
+  <div class="cards">
+    <div class="card"><div class="card-ic ic-acc">🏦</div><h4>The Interbank Price Delivery Algorithm (IPDA)</h4><p>ICT's theory: a global algorithm coordinates price delivery between major banks. It operates on a 20-40-60 trading day cycle, defines where price draws to next, and creates the highs and lows that retail sees as "natural" market movement.</p></div>
+    <div class="card"><div class="card-ic ic-gold">⚡</div><h4>Algorithmic Price Delivery</h4><p>Price does not "search" randomly for the next level. According to ICT, it is algorithmically routed from one liquidity pool to the next. The algorithm's job: collect liquidity, create imbalance, fill it, repeat. This is why certain patterns repeat precisely.</p></div>
+    <div class="card"><div class="card-ic ic-green">🎯</div><h4>Retail vs. Smart Money</h4><p>Retail sees: trends, patterns, indicators. Smart Money sees: liquidity pools, order flow, algorithmic delivery models. The gap in perspective explains why retail consistently loses to institutional operators who exploit predictable behaviour.</p></div>
+    <div class="card"><div class="card-ic ic-red">⚠️</div><h4>ICT is not a Holy Grail</h4><p>ICT is a framework, not a mechanical system. It requires subjective identification of levels, context-reading and patience. It has a steep learning curve and is easily misapplied. A profitable ICT trader has 200–500 hours of screen time with the concepts before live trading.</p></div>
+  </div>
+</div>
+
+<!-- LIQUIDITY -->
+<div class="sec" id="liquidity">
+  <div class="sec-head"><div class="sec-num">02</div><h2 class="sec-title">Liquidity <em>Theory</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>Liquidity is the foundation of everything in ICT. Without understanding where orders are clustered, every other concept is incomplete. <strong>Price does not move to technical levels because of "support and resistance" — it moves because that is where the orders are.</strong></p>
+  <div class="concept-vis">
+    <div class="cv-title">Liquidity Pool Distribution — A Typical Chart</div>
+    <div class="cv-svg">
+      <svg viewBox="0 0 600 200">
+        <rect width="600" height="200" fill="#04040C"/>
+        <line x1="0" y1="50" x2="600" y2="50" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <line x1="0" y1="100" x2="600" y2="100" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <line x1="0" y1="150" x2="600" y2="150" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <!-- Price path -->
+        <polyline points="20,155 60,130 100,140 150,80 190,95 230,60 260,165 280,170 300,158 340,90 390,50 440,38 490,28 540,20 580,15" fill="none" stroke="#00D4FF" stroke-width="2" stroke-linecap="round"/>
+        <!-- BSL zones -->
+        <rect x="210" y="30" width="140" height="12" fill="rgba(214,64,64,.15)" rx="2"/>
+        <text x="215" y="41" fill="#D64040" font-size="8" font-family="monospace">BSL — SHORT STOPS CLUSTER HERE</text>
+        <!-- SSL zones -->
+        <rect x="230" y="155" width="130" height="12" fill="rgba(29,184,112,.12)" rx="2"/>
+        <text x="235" y="165" fill="#1DB870" font-size="8" font-family="monospace">SSL — LONG STOPS CLUSTER HERE</text>
+        <!-- Equal highs -->
+        <line x1="150" y1="80" x2="260" y2="80" stroke="#D64040" stroke-width="1" stroke-dasharray="5,3" opacity=".6"/>
+        <text x="265" y="84" fill="#D64040" font-size="8" font-family="monospace">EQH</text>
+        <!-- Stop hunt annotation -->
+        <circle cx="270" cy="168" r="8" fill="none" stroke="#E8B84B" stroke-width="1.5" opacity=".8"/>
+        <text x="245" y="190" fill="#E8B84B" font-size="8" font-family="monospace">STOP HUNT → REVERSAL</text>
+      </svg>
+    </div>
+  </div>
+  <div class="acc-wrap">
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">📍</div><div class="acc-ttl">Sell-Side Liquidity (SSL) — Below Swing Lows</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>SSL consists of stop-loss orders from long positions placed below swing lows, below round numbers and below prior support. When price sweeps these levels, it triggers the stops — creating a wave of sell orders.</p>
+      <ul>
+        <li><strong>Formation:</strong> every time retail buys at a swing low with a stop below it, they contribute to the SSL pool</li>
+        <li><strong>How institutions use it:</strong> an institution wanting to buy drives price into the SSL zone, triggering stop sells, and buys into that selling pressure at a better price</li>
+        <li><strong>Recognition:</strong> wicks below prior lows, especially on the daily/4H, that immediately reverse</li>
+        <li><strong>Equal lows (EQL):</strong> two lows at the same price = double SSL. Price will almost certainly sweep this before reversing up</li>
+        <li><strong>After sweep:</strong> look for immediate bullish order flow — this is the entry trigger in many ICT setups</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">📍</div><div class="acc-ttl">Buy-Side Liquidity (BSL) — Above Swing Highs</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>BSL consists of stop-loss orders from short positions and buy stops from breakout traders placed above swing highs, above round numbers and above prior resistance.</p>
+      <ul>
+        <li><strong>Retail sees:</strong> a double top at 1.1050 → "strong resistance" → places short entry and stop above</li>
+        <li><strong>ICT sees:</strong> accumulated BSL above 1.1050 → institution will run price above this level to collect all those buy stops → then sell into the buying frenzy</li>
+        <li><strong>Equal highs (EQH):</strong> two highs at the same price = double BSL. A classic bull trap setup — sweep BSL, then reversal</li>
+        <li><strong>Turtle soup:</strong> ICT's name for taking the opposite side of an obvious breakout. The "breakout" is the stop hunt; the trade is the reversal.</li>
+        <li><strong>After sweep:</strong> look for immediate bearish order flow — candles closing well below the swept high</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🔄</div><div class="acc-ttl">Liquidity Raids — The Anatomy of a Stop Hunt</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>A liquidity raid is the deliberate price move into a liquidity pool, followed by a sharp reversal. Once you understand this, you will recognise it every single session.</p>
+      <ul>
+        <li><strong>Step 1 — Identify:</strong> where are the obvious highs, lows, equal levels? Those are the liquidity targets.</li>
+        <li><strong>Step 2 — Wait for the raid:</strong> price approaches and briefly exceeds the level. Volume often spikes here.</li>
+        <li><strong>Step 3 — Confirmation:</strong> a rejection candle forms above/below the level — a wick that closes back inside the range. This is the institutional sell/buy into the stop orders.</li>
+        <li><strong>Step 4 — Entry:</strong> enter in the reversal direction on the close of the rejection candle or the open of the next candle.</li>
+        <li><strong>Step 5 — Stop placement:</strong> above/below the wick extreme (the furthest point of the hunt).</li>
+        <li><strong>Key insight:</strong> the hunt wick is the stop — not a reason to avoid the trade. The wick IS the institutional footprint.</li>
+      </ul>
+    </div></div></div>
+  </div>
+  <table class="tbl">
+    <thead><tr><th>Liquidity Type</th><th>Location</th><th>Retail Interpretation</th><th>ICT Interpretation</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SSL</strong></td><td>Below swing lows, round numbers</td><td>Support breaking</td><td>Stop hunt → buy opportunity</td><td><span class="tag tag-bull">BUY AFTER SWEEP</span></td></tr>
+      <tr><td><strong>BSL</strong></td><td>Above swing highs, round numbers</td><td>Breakout</td><td>Stop hunt → sell opportunity</td><td><span class="tag tag-bear">SELL AFTER SWEEP</span></td></tr>
+      <tr><td><strong>EQL (Equal Lows)</strong></td><td>Two identical lows</td><td>Strong double support</td><td>Double SSL — very likely to be swept</td><td><span class="tag tag-bull">BUY AFTER SWEEP</span></td></tr>
+      <tr><td><strong>EQH (Equal Highs)</strong></td><td>Two identical highs</td><td>Strong double resistance</td><td>Double BSL — very likely to be swept</td><td><span class="tag tag-bear">SELL AFTER SWEEP</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ORDER BLOCKS -->
+<div class="sec" id="order-blocks">
+  <div class="sec-head"><div class="sec-num">03</div><h2 class="sec-title">Order <em>Blocks</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>An Order Block (OB) is the last candle — or group of candles — <em>before</em> a strong impulsive move. This is where institutions placed their orders. When price returns to this zone (mitigation), those orders are still active and price reacts strongly.</p>
+  <div class="concept-vis">
+    <div class="cv-title">Bullish Order Block — Structure and Mitigation</div>
+    <div class="cv-svg">
+      <svg viewBox="0 0 600 200">
+        <rect width="600" height="200" fill="#04040C"/>
+        <line x1="0" y1="60" x2="600" y2="60" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <line x1="0" y1="120" x2="600" y2="120" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <line x1="0" y1="170" x2="600" y2="170" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <!-- Build-up candles -->
+        <rect x="30" y="130" width="14" height="32" fill="#E84040" rx="1" opacity=".6"/>
+        <rect x="50" y="125" width="14" height="28" fill="#22C97A" rx="1" opacity=".6"/>
+        <rect x="70" y="128" width="14" height="30" fill="#E84040" rx="1" opacity=".6"/>
+        <!-- ORDER BLOCK candle (last red before impulse) -->
+        <rect x="90" y="118" width="16" height="36" fill="#E84040" rx="1"/>
+        <rect x="88" y="112" width="20" height="48" fill="none" stroke="#00D4FF" stroke-width="1.5" rx="3" stroke-dasharray="0"/>
+        <text x="88" y="108" fill="#00D4FF" font-size="8" font-family="monospace">ORDER BLOCK</text>
+        <!-- Impulse candles -->
+        <rect x="112" y="72" width="16" height="46" fill="#22C97A" rx="1"/>
+        <rect x="134" y="48" width="16" height="52" fill="#22C97A" rx="1"/>
+        <rect x="156" y="30" width="16" height="38" fill="#22C97A" rx="1"/>
+        <!-- Continuation up -->
+        <polyline points="178,49 210,40 230,30 255,25 280,18 310,15" stroke="#22C97A" stroke-width="2" fill="none"/>
+        <!-- Retracement -->
+        <polyline points="310,15 340,35 370,55 390,118" stroke="#E84040" stroke-width="2" fill="none"/>
+        <!-- Mitigation box -->
+        <rect x="88" y="118" width="70" height="42" fill="rgba(0,212,255,.06)" rx="3"/>
+        <line x1="88" y1="118" x2="600" y2="118" stroke="#00D4FF" stroke-width="1" stroke-dasharray="5,4" opacity=".5"/>
+        <line x1="88" y1="160" x2="600" y2="160" stroke="#00D4FF" stroke-width="1" stroke-dasharray="5,4" opacity=".3"/>
+        <text x="400" y="136" fill="#00D4FF" font-size="8" font-family="monospace">OB ZONE</text>
+        <!-- Mitigation candle -->
+        <rect x="390" y="125" width="14" height="35" fill="#22C97A" rx="1"/>
+        <line x1="397" y1="118" x2="397" y2="125" stroke="#22C97A" stroke-width="2"/>
+        <text x="395" y="185" fill="#1DB870" font-size="8" font-family="monospace">MITIGATION → LONG</text>
+        <!-- New impulse up -->
+        <polyline points="410,130 440,90 470,65 500,45 530,30 560,18" stroke="#22C97A" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+      </svg>
+    </div>
+  </div>
+  <div class="acc-wrap">
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🟢</div><div class="acc-ttl">Bullish Order Block — Definition and Entry</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <ul>
+        <li><strong>Definition:</strong> the last bearish (red) candle before an impulsive bullish move. The zone = the high and low of that candle (or the candle's body, depending on the ICT model version used).</li>
+        <li><strong>Why it works:</strong> institutions placed buy orders inside this candle. They were not all filled during the initial move. When price returns (mitigation), the remaining orders activate.</li>
+        <li><strong>Entry model:</strong> price retraces into the OB zone → forms a bullish rejection wick or engulfing → enter long at the bottom of the OB or on the wick close.</li>
+        <li><strong>Stop placement:</strong> below the OB low with 1–2 ATR buffer.</li>
+        <li><strong>Quality filters:</strong> (1) the impulsive move after the OB was large and fast, (2) the OB is in the direction of the HTF bias, (3) the OB is at a Fibonacci discount level (below 50%), (4) a Kill Zone is active.</li>
+        <li><strong>Mitigation check:</strong> once the OB is tested once, it loses strength. Twice tested = significantly weaker. Three times = likely invalid.</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🔴</div><div class="acc-ttl">Bearish Order Block — Definition and Entry</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <ul>
+        <li><strong>Definition:</strong> the last bullish (green) candle before an impulsive bearish move. The zone = the high and low of that candle.</li>
+        <li><strong>Entry model:</strong> price retraces into the OB zone → forms a bearish rejection → enter short at the top of the OB or on the wick close.</li>
+        <li><strong>Stop placement:</strong> above the OB high with 1–2 ATR buffer.</li>
+        <li><strong>Inverse OB:</strong> when a bullish OB fails (price closes through it), it can become a bearish OB — role reversal on the order block level.</li>
+        <li><strong>Breaker Block:</strong> a previously mitigated OB that has been violated. The broken OB structure then acts as an opposing block. A broken bullish OB becomes a bearish Breaker Block.</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🔮</div><div class="acc-ttl">Mitigation Blocks and Breaker Blocks</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <ul>
+        <li><strong>Mitigation Block:</strong> an OB that was previously tested and respected, but then price continued through it on the next visit. The failed mitigation creates a market structure shift.</li>
+        <li><strong>Breaker Block:</strong> a failed OB that now acts as the opposite type. A bullish OB that gets violated becomes a Bearish Breaker Block — when price returns from below, it acts as a sell zone.</li>
+        <li><strong>Propulsion Block:</strong> two back-to-back OBs in the same direction. The combined zone creates a stronger support/resistance area.</li>
+        <li><strong>Rejection Block:</strong> a wick that is unusually long relative to the body. The wick range acts as an OB — price will typically return to fill the wick range.</li>
+      </ul>
+    </div></div></div>
+  </div>
+  <div class="insight"><div class="ins-lbl">Critical Application Rule</div><p>Order blocks are most reliable when: <strong>(1) they align with a Fibonacci discount/premium zone</strong> (bullish OB below 50%, bearish OB above 50%), <strong>(2) a FVG is present</strong> within or adjacent to the OB, <strong>(3) the HTF shows a clear directional bias</strong>, and <strong>(4) a Kill Zone is active</strong>. All four present = maximum edge.</p></div>
+</div>
+
+<!-- FVG -->
+<div class="sec" id="fvg">
+  <div class="sec-head"><div class="sec-num">04</div><h2 class="sec-title">Fair Value <em>Gaps</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>A Fair Value Gap (FVG) — also called an imbalance — forms when price moves so fast that no fair exchange could occur between buyers and sellers. The gap between two candles represents a price zone that was never efficiently traded. Markets tend to return and fill these gaps.</p>
+  <div class="concept-vis">
+    <div class="cv-title">Fair Value Gap — Bullish and Bearish Examples</div>
+    <div class="cv-svg">
+      <svg viewBox="0 0 600 200">
+        <rect width="600" height="200" fill="#04040C"/>
+        <line x1="300" y1="0" x2="300" y2="200" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+        <text x="80" y="20" fill="#1DB870" font-size="9" font-family="monospace">BULLISH FVG</text>
+        <text x="360" y="20" fill="#E84040" font-size="9" font-family="monospace">BEARISH FVG</text>
+        <!-- Bullish FVG -->
+        <rect x="40" y="130" width="16" height="40" fill="#E84040" rx="1"/>
+        <line x1="48" y1="120" x2="48" y2="130" stroke="#E84040" stroke-width="1.5"/>
+        <line x1="48" y1="170" x2="48" y2="182" stroke="#E84040" stroke-width="1.5"/>
+        <!-- FVG zone (gap between candle 1 low and candle 3 high) -->
+        <rect x="68" y="90" width="52" height="34" fill="rgba(29,184,112,.12)" rx="2"/>
+        <text x="70" y="112" fill="#1DB870" font-size="7" font-family="monospace">FVG ZONE</text>
+        <!-- Impulse candle -->
+        <rect x="70" y="55" width="16" height="70" fill="#22C97A" rx="1"/>
+        <line x1="78" y1="40" x2="78" y2="55" stroke="#22C97A" stroke-width="1.5"/>
+        <line x1="78" y1="125" x2="78" y2="130" stroke="#22C97A" stroke-width="1.5"/>
+        <!-- Candle 3 -->
+        <rect x="92" y="42" width="16" height="48" fill="#22C97A" rx="1"/>
+        <line x1="100" y1="30" x2="100" y2="42" stroke="#22C97A" stroke-width="1.5"/>
+        <line x1="100" y1="90" x2="100" y2="100" stroke="#22C97A" stroke-width="1.5"/>
+        <!-- Continuation + retracement -->
+        <polyline points="114,55 140,40 165,30 180,25" stroke="#22C97A" stroke-width="2" fill="none"/>
+        <polyline points="180,25 200,50 215,90" stroke="#22C97A" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/>
+        <!-- Fill annotation -->
+        <line x1="68" y1="90" x2="270" y2="90" stroke="#1DB870" stroke-width="1" stroke-dasharray="4,4" opacity=".5"/>
+        <line x1="68" y1="124" x2="270" y2="124" stroke="#1DB870" stroke-width="1" stroke-dasharray="4,4" opacity=".3"/>
+        <!-- Bearish FVG -->
+        <rect x="350" y="40" width="16" height="40" fill="#22C97A" rx="1"/>
+        <line x1="358" y1="28" x2="358" y2="40" stroke="#22C97A" stroke-width="1.5"/>
+        <line x1="358" y1="80" x2="358" y2="90" stroke="#22C97A" stroke-width="1.5"/>
+        <rect x="372" y="76" width="52" height="32" fill="rgba(214,64,64,.12)" rx="2"/>
+        <text x="374" y="96" fill="#E84040" font-size="7" font-family="monospace">FVG ZONE</text>
+        <rect x="374" y="108" width="16" height="72" fill="#E84040" rx="1"/>
+        <line x1="382" y1="96" x2="382" y2="108" stroke="#E84040" stroke-width="1.5"/>
+        <line x1="382" y1="180" x2="382" y2="188" stroke="#E84040" stroke-width="1.5"/>
+        <rect x="396" y="120" width="16" height="62" fill="#E84040" rx="1"/>
+        <line x1="404" y1="108" x2="404" y2="120" stroke="#E84040" stroke-width="1.5"/>
+        <line x1="404" y1="182" x2="404" y2="192" stroke="#E84040" stroke-width="1.5"/>
+        <polyline points="418,132 445,155 465,165 490,175" stroke="#E84040" stroke-width="2" fill="none"/>
+        <polyline points="490,175 510,155 525,108" stroke="#E84040" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/>
+        <line x1="372" y1="76" x2="590" y2="76" stroke="#E84040" stroke-width="1" stroke-dasharray="4,4" opacity=".5"/>
+        <line x1="372" y1="108" x2="590" y2="108" stroke="#E84040" stroke-width="1" stroke-dasharray="4,4" opacity=".3"/>
+      </svg>
+    </div>
+  </div>
+  <div class="acc-wrap">
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">📏</div><div class="acc-ttl">Identifying FVGs — The Three-Candle Rule</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>A FVG requires three candles:</p>
+      <ul>
+        <li><strong>Bullish FVG:</strong> the <em>low of Candle 3</em> is higher than the <em>high of Candle 1</em>. The gap between these two levels is the FVG zone.</li>
+        <li><strong>Bearish FVG:</strong> the <em>high of Candle 3</em> is lower than the <em>low of Candle 1</em>. The gap between these levels is the FVG zone.</li>
+        <li><strong>The impulse candle (middle):</strong> Candle 2 is the engine. It moved so fast that the gap between Candles 1 and 3 was never traded.</li>
+        <li><strong>Quality filter:</strong> larger FVGs (bigger gap relative to ATR) are more significant. FVGs on higher timeframes (4H, Daily) are more reliable than intraday.</li>
+        <li><strong>Nested FVGs:</strong> multiple FVGs in the same direction stacking on top of each other = very strong supply/demand zone.</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🎯</div><div class="acc-ttl">Trading FVGs — Fill, Partial Fill and Invalidation</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <ul>
+        <li><strong>Full fill:</strong> price returns to trade through the entire FVG zone. After a full fill, the FVG is "mitigated" and no longer a reliable reversal zone.</li>
+        <li><strong>Partial fill:</strong> price enters the FVG and reacts at 50% of the zone (the "equilibrium" of the FVG). This is the most common and most actionable scenario.</li>
+        <li><strong>Entry model:</strong> wait for price to enter the FVG zone → look for a rejection candlestick → enter with stop beyond the FVG boundary.</li>
+        <li><strong>Target:</strong> the opposing liquidity pool (SSL or BSL) after mitigation of the FVG.</li>
+        <li><strong>Invalidation:</strong> price closes through the entire FVG with a full-bodied candle → FVG is invalidated → do not trade it.</li>
+        <li><strong>Inverted FVG:</strong> once a bullish FVG is fully closed through, it can act as resistance on the retest (now a supply zone). Same logic as OB role reversal.</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🔗</div><div class="acc-ttl">FVG + OB Confluence — The Highest-Probability Zone</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>When a FVG overlaps with an Order Block, the zone becomes one of the highest-probability reversal areas in ICT:</p>
+      <ul>
+        <li>The OB shows <em>where</em> institutional orders were placed</li>
+        <li>The FVG shows <em>that</em> an imbalance exists that the market will seek to fill</li>
+        <li>Both pointing to the same price zone = maximum confluence</li>
+        <li><strong>Entry precision:</strong> enter at the 50% level of the FVG that overlaps with the OB. This gives a tight stop and excellent R:R.</li>
+        <li><strong>Filter:</strong> add Fibonacci discount (bullish setup below 50% of the range) for the strongest configuration possible</li>
+        <li><strong>This combination — OB + FVG + Fib discount + Kill Zone timing — is the complete ICT entry model</strong></li>
+      </ul>
+    </div></div></div>
+  </div>
+</div>
+
+<!-- ICT ENTRIES -->
+<div class="sec" id="ict-entries">
+  <div class="sec-head"><div class="sec-num">05</div><h2 class="sec-title">ICT <em>Entry Models</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>ICT has multiple named entry models. Each has specific conditions and a defined setup sequence. The models are not arbitrary — they are derived from algorithmic price delivery patterns that repeat at specific times and levels.</p>
+  <div class="acc-wrap">
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🌅</div><div class="acc-ttl">The London Open Setup (LOD)</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>One of the highest-probability ICT setups, based on the predictable nature of the London open session (08:00–10:00 CET).</p>
+      <div class="step-flow">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Define HTF Bias (Daily/4H)</div><div class="step-desc">Before London opens: is the daily chart bullish or bearish? This determines whether you are looking for a long or short setup.</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Identify the Asian Range</div><div class="step-desc">Mark the high and low of the Asian session (00:00–08:00 CET). This range usually contains liquidity on both sides.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Watch the London Stop Hunt</div><div class="step-desc">At or just after 08:00 CET, price often raids one side of the Asian range first — hunting stops. If bullish bias: expect SSL hunt first, then the real move up.</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Enter on the Reversal</div><div class="step-desc">After the stop hunt, price enters an OB or FVG. Enter in the direction of the HTF bias. Stop: beyond the hunt wick. Target: the opposing liquidity (Asian range opposite side, then beyond).</div></div></div>
+      </div>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🌆</div><div class="acc-ttl">The New York Open Setup (NYO)</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>The New York Open Kill Zone (14:30–16:00 CET) provides the second major setup window of the day.</p>
+      <ul>
+        <li><strong>Initial balance (IB):</strong> the first 60 minutes of the NY session creates the initial balance. Mark these highs and lows.</li>
+        <li><strong>Setup type 1 — Continuation:</strong> London established a trend. NY open provides a pullback entry in that direction, often to a 4H OB or FVG.</li>
+        <li><strong>Setup type 2 — Reversal:</strong> London move was a stop hunt (fake move in wrong direction). NY open reverses back toward the real target.</li>
+        <li><strong>Confirmation signal:</strong> a displacement candle at NY open that closes decisively in one direction — often the start of the real move.</li>
+        <li><strong>Key time:</strong> 14:30–15:00 CET is the highest-probability window. After 16:00 CET, probability declines.</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🎭</div><div class="acc-ttl">The Judas Swing — The Classic ICT Misdirection</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>Named after the biblical betrayal — a move that looks genuine but is actually misdirection. One of ICT's most important concepts.</p>
+      <ul>
+        <li><strong>Bullish day example:</strong> at the open (London or NY), price drops sharply below the prior low → retail shorts pile in → then price reverses violently upward → retail shorts are stopped out → the stop-out buying provides fuel for the real move up.</li>
+        <li><strong>Bearish day example:</strong> price opens and initially rallies above prior high → retail longs enter the breakout → then price collapses → retail longs stop out → their stop selling accelerates the real move down.</li>
+        <li><strong>Recognition:</strong> the Judas swing is fast (usually completes in 15–30 minutes at the open), takes a relatively small liquidity pool, and the reversal candles are strong displacement moves.</li>
+        <li><strong>Entry:</strong> let the Judas swing complete (confirmed reversal wick), then enter in the true direction of the day. Stop: beyond the Judas swing extreme.</li>
+        <li><strong>Application:</strong> trading in the direction of the Judas swing is the most common retail mistake. Trading against it (in the true direction) is the ICT edge.</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">📐</div><div class="acc-ttl">The Silver Bullet — Precision 15-Minute Entry</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <p>A specific ICT entry model designed for the 15-minute chart during three specific time windows: 03:00–04:00 CET, 10:00–11:00 CET, 14:00–15:00 CET.</p>
+      <ul>
+        <li><strong>Conditions:</strong> HTF bias defined. Price has made a liquidity sweep (SSL or BSL) before the Silver Bullet window.</li>
+        <li><strong>During the window:</strong> price displaces in the true direction, creating a 15-minute FVG.</li>
+        <li><strong>Entry:</strong> enter on the 50% level of the FVG created during the Silver Bullet window.</li>
+        <li><strong>Stop:</strong> beyond the FVG boundary.</li>
+        <li><strong>Target:</strong> the next significant liquidity pool in the direction of the trade.</li>
+        <li><strong>Why it works:</strong> these windows correspond to predictable institutional order flow events at specific New York time windows that align with IPDA algorithmic activity.</li>
+      </ul>
+    </div></div></div>
+  </div>
+</div>
+
+<!-- KILL ZONES -->
+<div class="sec" id="kill-zones">
+  <div class="sec-head"><div class="sec-num">06</div><h2 class="sec-title">Kill Zones & <em>Session Timing</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>In ICT, <em>time is as important as price.</em> The same OB or FVG visited at 03:00 CET will perform completely differently than the same zone visited at 08:30 CET. Kill Zones are the windows of highest institutional activity — where setups carry maximum probability.</p>
+  <table class="tbl">
+    <thead><tr><th>Kill Zone</th><th>Time (CET)</th><th>Character</th><th>Best Setup Type</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Asian Range</strong></td><td>00:00 – 06:00</td><td>Range formation, low volume, liquidity building</td><td>Mark highs/lows for later hunt</td><td><span class="tag tag-neu">OBSERVE</span></td></tr>
+      <tr><td><strong>London Open KZ</strong></td><td>08:00 – 10:00</td><td>First major displacement, Judas swing, OB/FVG entries</td><td>London setup / Judas swing</td><td><span class="tag tag-bull">TIER 1</span></td></tr>
+      <tr><td><strong>London Close</strong></td><td>10:00 – 12:00</td><td>Continuation or exhaustion of London move</td><td>Trail London trade or pass</td><td><span class="tag tag-neu">SECONDARY</span></td></tr>
+      <tr><td><strong>NY Open KZ</strong></td><td>14:30 – 16:00</td><td>Highest volume, reversal or continuation, Silver Bullet</td><td>NY setup / Silver Bullet</td><td><span class="tag tag-bull">TIER 1</span></td></tr>
+      <tr><td><strong>NY Lunch</strong></td><td>17:00 – 19:00</td><td>Low volume, choppy, avoid</td><td>No trading recommended</td><td><span class="tag tag-bear">AVOID</span></td></tr>
+      <tr><td><strong>NY PM Session</strong></td><td>19:00 – 21:00</td><td>Lower volume, some end-of-day rebalancing</td><td>Only with clear HTF setup</td><td><span class="tag tag-neu">LOW PRIORITY</span></td></tr>
+    </tbody>
+  </table>
+  <div class="insight"><div class="ins-lbl">The Time-Based Edge</div><p>An OB visited during the London Open Kill Zone carries significantly higher probability than the same OB visited at 15:00 CET London afternoon. <strong>Always check: is a Kill Zone active?</strong> If not, wait. Time is one of the strongest filters in ICT and the most commonly ignored one.</p></div>
+</div>
+
+<!-- PRICE DELIVERY -->
+<div class="sec" id="delivery">
+  <div class="sec-head"><div class="sec-num">07</div><h2 class="sec-title">Price <em>Delivery</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>ICT teaches that price is algorithmically delivered — not randomly discovered. Understanding how price delivers gives you a framework for reading the intention behind every move.</p>
+  <div class="acc-wrap">
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">⚡</div><div class="acc-ttl">Displacement and Consolidation — The Engine of Price</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <ul>
+        <li><strong>Displacement:</strong> a rapid, impulsive move in one direction — the engine candle. This is algorithmic order flow activating. Creates FVGs and BOS (Break of Structure).</li>
+        <li><strong>Consolidation:</strong> the range-bound period between displacements. Liquidity builds here. The longer the consolidation, the more explosive the next displacement.</li>
+        <li><strong>ICT rule:</strong> trade displacement, not consolidation. Enter after displacement creates a FVG, on the pullback into that FVG. Do not trade within the range.</li>
+        <li><strong>Accumulation phases within consolidation:</strong> small, quiet OBs form during consolidation. These are accumulation zones — price will eventually displace out of them.</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">📊</div><div class="acc-ttl">Market Structure Shifts (MSS) and CHoCH</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <ul>
+        <li><strong>Market Structure Shift (MSS):</strong> a displacement that breaks the last significant swing high (bullish MSS) or swing low (bearish MSS). Signals that the algorithm has shifted delivery direction.</li>
+        <li><strong>Change of Character (CHoCH):</strong> the first break of structure against the current trend — the earliest possible signal of a trend change. Less reliable than MSS but gives an earlier entry.</li>
+        <li><strong>Break of Structure (BOS):</strong> continuation signal — in an uptrend, price breaks above the last swing high = BOS bullish. In downtrend, price breaks below last swing low = BOS bearish.</li>
+        <li><strong>Trading MSS:</strong> enter the first OB or FVG created after the MSS displacement, in the direction of the shift. Stop: below the MSS low (bullish) or above the MSS high (bearish).</li>
+        <li><strong>Multi-timeframe application:</strong> a Daily MSS is more significant than a 15-min MSS. Higher timeframe MSS → larger position size and wider stop is appropriate.</li>
+      </ul>
+    </div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🔄</div><div class="acc-ttl">Optimal Trade Entry (OTE) — The Fibonacci-ICT Bridge</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">
+      <ul>
+        <li><strong>OTE zone:</strong> 61.8% to 79% retracement of the displacement move (the swing from the MSS origin to the displacement high/low).</li>
+        <li><strong>Why:</strong> institutions accumulate into pullbacks at the OTE zone. Retail sell their longs here (thinking the move is over), institutions absorb the selling and reload.</li>
+        <li><strong>Setup:</strong> displacement creates a BOS/MSS → price pulls back to 61.8–79% → OB or FVG is present within this zone → enter long/short at the zone with rejection candle.</li>
+        <li><strong>Confluence stack:</strong> OTE + OB + FVG + Kill Zone + HTF bias = the highest-probability ICT setup available.</li>
+        <li><strong>Target from OTE entry:</strong> minimum target = 127.2% extension of the displacement leg. Full target = 161.8%.</li>
+      </ul>
+    </div></div></div>
+  </div>
+</div>
+
+<!-- PD ARRAYS -->
+<div class="sec" id="pd-arrays">
+  <div class="sec-head"><div class="sec-num">08</div><h2 class="sec-title">PD Arrays — <em>Premium & Discount</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>ICT's PD (Premium/Discount) framework is the master filter for all entries. Every trade must be in a discount zone (for longs) or premium zone (for shorts). Trading in the wrong zone is the single biggest cause of ICT setup failures.</p>
+  <div class="concept-vis">
+    <div class="cv-title">Premium / Discount Framework</div>
+    <div class="cv-svg">
+      <svg viewBox="0 0 600 200">
+        <rect width="600" height="200" fill="#04040C"/>
+        <!-- Range box -->
+        <rect x="40" y="30" width="200" height="140" fill="rgba(255,255,255,.02)" rx="4" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+        <!-- 50% line -->
+        <line x1="40" y1="100" x2="240" y2="100" stroke="#00D4FF" stroke-width="1.5" stroke-dasharray="0"/>
+        <text x="250" y="104" fill="#00D4FF" font-size="9" font-family="monospace">50% EQ</text>
+        <!-- Premium zone -->
+        <rect x="40" y="30" width="200" height="70" fill="rgba(214,64,64,.05)" rx="4"/>
+        <text x="100" y="55" fill="#D64040" font-size="10" font-family="monospace">PREMIUM ZONE</text>
+        <text x="100" y="70" fill="#D64040" font-size="8" font-family="monospace">Sell here — Above 50%</text>
+        <!-- Discount zone -->
+        <rect x="40" y="100" width="200" height="70" fill="rgba(29,184,112,.05)" rx="4"/>
+        <text x="100" y="130" fill="#1DB870" font-size="10" font-family="monospace">DISCOUNT ZONE</text>
+        <text x="100" y="145" fill="#1DB870" font-size="8" font-family="monospace">Buy here — Below 50%</text>
+        <!-- Fib levels on the right -->
+        <text x="260" y="35" fill="#D64040" font-size="8" font-family="monospace">100% — Swing High</text>
+        <text x="260" y="58" fill="#D64040" font-size="8" font-family="monospace">79% — Deep Discount</text>
+        <text x="260" y="78" fill="#D64040" font-size="8" font-family="monospace">61.8% — OTE Zone ★</text>
+        <text x="260" y="104" fill="#00D4FF" font-size="9" font-family="monospace">50% — Equilibrium</text>
+        <text x="260" y="128" fill="#1DB870" font-size="8" font-family="monospace">38.2% — Discount</text>
+        <text x="260" y="148" fill="#1DB870" font-size="8" font-family="monospace">23.6% — Deep Discount</text>
+        <text x="260" y="175" fill="#1DB870" font-size="8" font-family="monospace">0% — Swing Low</text>
+        <!-- Arrows -->
+        <text x="540" y="50" fill="#D64040" font-size="18">↓</text>
+        <text x="538" y="45" fill="#D64040" font-size="8" font-family="monospace">SELL</text>
+        <text x="540" y="155" fill="#1DB870" font-size="18">↑</text>
+        <text x="538" y="175" fill="#1DB870" font-size="8" font-family="monospace">BUY</text>
+      </svg>
+    </div>
+  </div>
+  <table class="tbl">
+    <thead><tr><th>PD Array Element</th><th>Bullish Application</th><th>Bearish Application</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Order Block</strong></td><td>Bullish OB in discount zone</td><td>Bearish OB in premium zone</td><td><span class="tag tag-bull">HIGH</span></td></tr>
+      <tr><td><strong>Fair Value Gap</strong></td><td>Bullish FVG below 50%</td><td>Bearish FVG above 50%</td><td><span class="tag tag-bull">HIGH</span></td></tr>
+      <tr><td><strong>Breaker Block</strong></td><td>Failed bearish OB → now support</td><td>Failed bullish OB → now resistance</td><td><span class="tag tag-neu">MEDIUM</span></td></tr>
+      <tr><td><strong>Rejection Block</strong></td><td>Wick range in discount → support</td><td>Wick range in premium → resistance</td><td><span class="tag tag-neu">MEDIUM</span></td></tr>
+      <tr><td><strong>Void / FVG</strong></td><td>Unfilled imbalance below current price</td><td>Unfilled imbalance above current price</td><td><span class="tag tag-bull">HIGH</span></td></tr>
+      <tr><td><strong>SSL/BSL</strong></td><td>SSL below discount OB → combo</td><td>BSL above premium OB → combo</td><td><span class="tag tag-bull">HIGHEST</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FULL MODEL -->
+<div class="sec" id="model">
+  <div class="sec-head"><div class="sec-num">09</div><h2 class="sec-title">The Complete <em>ICT Trade Model</em></h2></div>
+  <div class="sec-rule"></div>
+  <p>Everything from this module now combines into a single repeatable decision framework. This is not a mechanical system — it is a disciplined sequence of questions answered before every trade.</p>
+  <div class="step-flow">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">HTF Bias — What is the daily/4H chart saying?</div><div class="step-desc">Is price above or below the EMA200 daily? Is structure bullish (HH+HL) or bearish (LH+LL)? Determine whether today is a buy day or sell day. No bias = no trade.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Liquidity Target — Where is price drawn to?</div><div class="step-desc">Mark the previous day/week high and low. Mark equal highs and lows. Mark recent swing highs and lows. Identify which side has more accumulated liquidity (BSL or SSL) — that is the likely target for today's move.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Premium / Discount — Where is price now?</div><div class="step-desc">Apply 50% Fibonacci to the current range. Is price in Premium (above 50%) or Discount (below 50%)? Bullish setups require discount entries. Bearish setups require premium entries. Wrong zone = skip the setup.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">PD Array Identification — What specific level to use?</div><div class="step-desc">Within the correct zone, identify the highest-quality PD array: OB + FVG overlap is best. OB alone is second. FVG alone is third. Mark the exact entry zone.</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Kill Zone Timing — Are we in the right window?</div><div class="step-desc">Is the London Open KZ (08:00–10:00) or NY Open KZ (14:30–16:00) active? If not, wait. The best setup in the wrong time window has significantly lower probability.</div></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Liquidity Sweep Confirmation</div><div class="step-desc">Before entering, has a liquidity sweep occurred? SSL swept (bullish trade) or BSL swept (bearish trade)? The sweep confirms institutional activity at this level. Without a sweep: lower probability, wider stop required.</div></div></div>
+    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Entry Trigger — Confirmation Candle</div><div class="step-desc">Enter on the close of a rejection candle within the PD array. Bullish: wick below the OB/FVG with bullish close. Bearish: wick above the zone with bearish close. No trigger = no entry. Stop: below/above the trigger candle wick.</div></div></div>
+    <div class="step"><div class="step-num">8</div><div class="step-body"><div class="step-title">Target — The Opposing Liquidity Pool</div><div class="step-desc">Target 1: the liquidity that was swept (reclaim of swept level). Target 2: the next significant BSL (bullish) or SSL (bearish). Target 3: the Fibonacci extension (127.2% of the displacement leg).</div></div></div>
+  </div>
+  <div class="aha">
+    <div class="aha-lbl">The ICT Edge in One Sentence</div>
+    <h4>Wait for liquidity to be taken, then enter in the true direction at a PD array, during a Kill Zone.</h4>
+    <p>This is the complete ICT trade model compressed to its essence. Every step above exists to answer three questions: where is the liquidity? Where is the institutional entry zone? What time is it? When all three align — that is the trade.</p>
+  </div>
+  <div class="warn"><div class="warn-ic">⚠️</div><p><strong>Prerequisite:</strong> This module assumes you have completed Modules 1–3. ICT without understanding monetary policy (M1), market structure (M2) and emotional discipline (M3) is like driving on the motorway without knowing the rules of the road. Build the foundation before the framework.</p></div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+    <a href="modul-7.html" style="padding:14px 28px;background:linear-gradient(135deg,var(--accent),#00A8CC);color:#020208;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:3px;text-decoration:none;font-weight:700">Continue → Module 7</a>
+    <a href="modul-4.html" style="padding:14px 24px;border:1px solid var(--abdr);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:3px;text-decoration:none">Open Journal</a>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');const id=e.target.id;document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.getAttribute('href')==='#'+id))}})},{threshold:.07});
+document.querySelectorAll('.sec').forEach(s=>obs.observe(s));
+window.addEventListener('scroll',()=>{const p=Math.round(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100);document.getElementById('pfill').style.width=p+'%';document.getElementById('pct').textContent=p+'%'});
+function ta(h){const it=h.parentElement,bd=it.querySelector('.acc-body'),open=it.classList.contains('open');document.querySelectorAll('.acc-item').forEach(i=>{i.classList.remove('open');i.querySelector('.acc-body').style.maxHeight='0'});if(!open){it.classList.add('open');bd.style.maxHeight=bd.scrollHeight+'px'}}
+</script>
+</body>
+</html>

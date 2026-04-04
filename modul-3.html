@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>APEX TRADER — Module 3: Psychology & Discipline</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+:root{
+  --bg:#08040C;--s2:#0F0814;--s3:#150D1C;--s4:#1A1024;
+  --purple:#9B6DFF;--pdim:rgba(155,109,255,.1);--pbdr:rgba(155,109,255,.28);
+  --pink:#E040C8;
+  --gold:#D4A843;--gldim:rgba(212,168,67,.1);--glbdr:rgba(212,168,67,.25);
+  --red:#E84040;--rdim:rgba(232,64,64,.1);
+  --green:#22C97A;--gdim:rgba(34,201,122,.1);--gbdr:rgba(34,201,122,.25);
+  --cyan:#00D4AA;--cdim:rgba(0,212,170,.08);
+  --t:#EEE8F8;--td:#7060A0;--tf:#2A1A40;
+  --border:rgba(255,255,255,.05);--border2:rgba(255,255,255,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font-family:'Outfit',sans-serif;overflow-x:hidden;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 55% 40% at 80% 0%,rgba(155,109,255,.05),transparent 60%);pointer-events:none;z-index:0}
+
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:256px;background:rgba(8,4,12,.97);border-right:1px solid var(--border);z-index:100;display:flex;flex-direction:column;backdrop-filter:blur(20px)}
+.sb-top{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sb-logo-mark-skip{display:none} .sb-module{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--purple);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sb-module::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--purple);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.sb-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;color:var(--t);line-height:1.1}
+.sb-nav{flex:1;overflow-y:auto;padding:12px 8px}
+.sb-nav::-webkit-scrollbar{width:2px}.sb-nav::-webkit-scrollbar-thumb{background:var(--tf)}
+.nav-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--tf);padding:10px 12px 6px;display:block}
+.nav-a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;text-decoration:none;font-size:12.5px;color:var(--td);transition:all .2s;border-left:2px solid transparent;margin:1px 0}
+.nav-a:hover{background:var(--s3);color:var(--t)}.nav-a.on{background:var(--pdim);color:var(--purple);border-left-color:var(--purple)}
+.mod-links{padding:8px;border-top:1px solid var(--border)}
+.mod-link{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;text-decoration:none;font-size:11px;color:var(--td);transition:all .2s;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+.mod-link:hover{background:var(--s3);color:var(--t)}.mod-link.am{color:var(--purple)}
+.sb-bottom{padding:16px 20px;border-top:1px solid var(--border)}
+.prog-row{display:flex;justify-content:space-between;font-size:11px;color:var(--td);font-family:'JetBrains Mono',monospace;margin-bottom:7px}
+.prog-track{height:2px;background:var(--s3);border-radius:1px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:1px;width:0%;transition:width .6s}
+.nav-toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--t);font-size:16px}
+@media(max-width:960px){.sidebar{transform:translateX(-100%);transition:transform .3s}.sidebar.open{transform:translateX(0)}.main{margin-left:0!important;width:100%!important}.hero{padding:80px 20px 36px!important;min-height:auto!important}.content{padding:0 20px 80px!important}.nav-toggle{display:flex!important}}
+
+.main{margin-left:256px;min-height:100vh;position:relative;z-index:1}
+.hero{position:relative;min-height:460px;display:flex;flex-direction:column;justify-content:flex-end;padding:56px 60px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(155,109,255,.06),transparent 50%,rgba(224,64,200,.03) 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);background-size:48px 48px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--pdim);border:1px solid var(--pbdr);color:var(--purple);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:6px 14px;border-radius:2px;margin-bottom:20px;width:fit-content;position:relative;z-index:1}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,8vw,96px);letter-spacing:5px;line-height:.9;position:relative;z-index:1;max-width:640px}
+.hero h1 em{color:var(--purple);font-style:normal}
+.hero-sub{font-size:15px;color:var(--td);max-width:520px;margin-top:18px;line-height:1.65;position:relative;z-index:1}
+.hero-sub em{color:var(--purple);font-style:italic}
+.hero-stats{display:flex;gap:32px;margin-top:28px;position:relative;z-index:1}
+.hs-val{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--purple)}
+.hs-lbl{font-size:10px;color:var(--tf);font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.content{padding:0 60px 120px}
+.sec{margin-bottom:80px;opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}.sec.vis{opacity:1;transform:translateY(0)}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:36px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.sec-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--purple);letter-spacing:2px;background:var(--pdim);border:1px solid var(--pbdr);padding:4px 10px;border-radius:2px}
+.sec-title{font-family:'Crimson Pro',serif;font-size:clamp(22px,3.5vw,36px);font-weight:600;color:var(--t)}
+.sec-title em{color:var(--purple);font-style:italic}
+p{font-size:15px;color:var(--td);line-height:1.85;margin-bottom:16px}
+p strong{color:var(--t);font-weight:600}p em{color:var(--purple);font-style:italic}
+h3{font-family:'Crimson Pro',serif;font-size:21px;font-weight:600;color:var(--t);margin:26px 0 13px}
+
+.aha{background:linear-gradient(135deg,rgba(155,109,255,.07),rgba(224,64,200,.04));border:1px solid var(--pbdr);border-radius:12px;padding:26px 30px;margin:28px 0;position:relative;overflow:hidden}
+.aha::after{content:'💡';position:absolute;right:18px;top:14px;font-size:30px;opacity:.35}
+.aha-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--purple);margin-bottom:10px}
+.aha h4{font-family:'Crimson Pro',serif;font-size:20px;font-weight:600;color:#C8AAFF;margin-bottom:8px;font-style:italic}
+.aha p{font-size:14px;color:var(--td);margin:0}
+.insight{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:0 8px 8px 0;padding:18px 22px;margin:22px 0}
+.ins-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
+.insight p{font-size:13.5px;color:var(--td);margin:0}
+.warn{background:var(--rdim);border:1px solid rgba(232,64,64,.22);border-radius:8px;padding:18px 22px;margin:22px 0;display:flex;gap:14px}
+.warn p{font-size:13.5px;color:var(--td);margin:0}.warn strong{color:var(--red)}
+
+/* EMOTION CARDS */
+.emo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:22px 0}
+.emo-card{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.emo-card:hover{border-color:var(--pbdr);transform:translateY(-2px)}
+.emo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.ec-danger::before{background:var(--red)}.ec-warn::before{background:var(--gold)}.ec-safe::before{background:var(--green)}
+.emo-icon{font-size:26px;margin-bottom:10px}
+.emo-name{font-size:14px;font-weight:700;color:var(--t);margin-bottom:5px}
+.emo-desc{font-size:12px;color:var(--td);line-height:1.6;margin-bottom:10px}
+.emo-fix{background:var(--bg);border-radius:6px;padding:10px 12px;border-left:2px solid var(--purple)}
+.emo-fix-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:4px}
+.emo-fix p{font-size:11px;color:var(--td);margin:0;line-height:1.5}
+
+/* RISK CALCULATOR */
+.risk-calc{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:28px;margin:22px 0}
+.rc-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:22px}
+.slider-row{display:grid;grid-template-columns:150px 1fr 70px;align-items:center;gap:14px;margin-bottom:16px}
+.sl-lbl{font-size:13px;color:var(--t);font-weight:500}
+.sl-range{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--s3);outline:none;cursor:pointer}
+.sl-range::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--purple);cursor:pointer;box-shadow:0 0 8px rgba(155,109,255,.4)}
+.sl-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--purple);text-align:right}
+.rc-output{margin-top:20px;padding:18px 20px;background:var(--s3);border-radius:10px;border:1px solid var(--pbdr)}
+.rco-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:14px}
+.rco-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.rco-stat{text-align:center;background:var(--bg);border-radius:8px;padding:14px 8px}
+.rco-val{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:3px}
+.rco-lbl{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--td);letter-spacing:1px;text-transform:uppercase}
+
+/* RULES */
+.rules-list{margin:20px 0}
+.rule-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);transition:padding .2s;cursor:default}
+.rule-item:last-child{border-bottom:none}
+.rule-num{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--purple);min-width:30px;line-height:1.1;margin-top:2px}
+.rule-content h4{font-size:14px;font-weight:600;color:var(--t);margin-bottom:4px}
+.rule-content p{font-size:12.5px;color:var(--td);line-height:1.6;margin:0}
+
+/* ACCORDION */
+.acc-wrap{margin:20px 0}
+.acc-item{border:1px solid var(--border);border-radius:8px;margin-bottom:7px;overflow:hidden;transition:border-color .2s}
+.acc-item.open{border-color:var(--pbdr)}
+.acc-head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--s2);user-select:none;transition:background .2s}
+.acc-head:hover{background:var(--s3)}
+.acc-ico{width:30px;height:30px;border-radius:7px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.acc-item.open .acc-ico{background:var(--pdim)}
+.acc-ttl{flex:1;font-size:13.5px;font-weight:600;color:var(--t)}
+.acc-arr{color:var(--td);transition:transform .3s;font-size:11px}
+.acc-item.open .acc-arr{transform:rotate(180deg);color:var(--purple)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-inner{padding:18px 18px 18px 60px;font-size:13px;color:var(--td);line-height:1.7;border-top:1px solid var(--border)}
+.acc-inner ul{padding-left:16px;margin-top:8px}.acc-inner ul li{margin-bottom:6px}
+.acc-inner strong{color:var(--t)}.acc-inner em{color:var(--purple)}
+
+/* CHECKLIST */
+.checklist{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:24px 26px;margin:20px 0}
+.cl-head{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:16px}
+.cl-count{color:var(--td)}
+.cl-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:padding .15s}
+.cl-item:last-child{border-bottom:none}.cl-item:hover{padding-left:5px}
+.cl-box{width:19px;height:19px;border:1.5px solid var(--border2);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:2px}
+.cl-item.chk .cl-box{background:var(--purple);border-color:var(--purple)}
+.cl-item.chk .cl-box::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+.cl-txt{font-size:13px;color:var(--td);line-height:1.5}
+.cl-item.chk .cl-txt{color:var(--tf);text-decoration:line-through}
+
+/* BREATHING */
+.breathing{background:var(--s2);border:1px solid var(--pbdr);border-radius:16px;padding:36px;margin:24px 0;text-align:center}
+.br-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:24px}
+.br-circle{width:120px;height:120px;border-radius:50%;border:2px solid var(--purple);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;transition:transform 4s ease;position:relative}
+.br-circle.expand{transform:scale(1.5)}
+.br-circle.hold{transform:scale(1.5)}
+.br-circle.contract{transform:scale(1)}
+.br-inner{width:68px;height:68px;border-radius:50%;background:var(--pdim);display:flex;align-items:center;justify-content:center;font-size:20px;transition:opacity .5s}
+.br-text{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--t);margin-bottom:6px}
+.br-phase{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;min-height:16px}
+.br-btn{padding:11px 26px;background:var(--purple);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .2s}
+.br-btn:hover{background:#7C5CE8;transform:translateY(-1px)}
+.br-count{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--td);margin-top:10px;letter-spacing:1px;min-height:16px}
+
+/* MINDSET QUIZ */
+.mq-wrap{background:var(--s2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:22px 0}
+.mq-head{background:var(--s3);padding:18px 24px;border-bottom:1px solid var(--border)}
+.mq-head h3{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--purple);margin:0}
+.mq-item{padding:20px 24px;border-bottom:1px solid var(--border)}
+.mq-item:last-child{border-bottom:none}
+.mq-q{font-size:14px;font-weight:600;color:var(--t);margin-bottom:12px}
+.mq-opts{display:flex;flex-direction:column;gap:7px}
+.mq-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--td)}
+.mq-opt:hover:not(.dis){border-color:var(--pbdr);color:var(--t);background:var(--pdim)}
+.mq-opt.sel{border-color:var(--purple);background:var(--pdim);color:var(--t)}
+.mq-opt.cor{border-color:var(--green);background:var(--gdim);color:var(--green)}
+.mq-opt.wrn{border-color:var(--red);background:var(--rdim);color:var(--red)}
+.mq-opt.dis{cursor:default}
+.mq-radio{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;transition:all .2s}
+.mq-opt.sel .mq-radio{border-color:var(--purple);background:var(--purple)}
+.mq-opt.cor .mq-radio{border-color:var(--green);background:var(--green)}
+.mq-opt.wrn .mq-radio{border-color:var(--red);background:var(--red)}
+.mq-feedback{margin-top:10px;padding:12px 16px;background:var(--s3);border-radius:7px;border-left:3px solid var(--purple);font-size:13px;color:var(--td);display:none;animation:fadeUp .3s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.mq-feedback.on{display:block}.mq-feedback strong{color:var(--purple)}
+
+/* STREAK TRACKER */
+.streak-wrap{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:26px;margin:22px 0}
+.st-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:20px}
+.streak-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.streak-day{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:12px}
+.streak-day:hover{border-color:var(--pbdr)}
+.streak-day.win{background:var(--gdim);border-color:var(--gbdr);color:var(--green)}
+.streak-day.loss{background:var(--rdim);border-color:rgba(232,64,64,.25);color:var(--red)}
+.streak-day.skip{background:var(--gldim);border-color:var(--glbdr);color:var(--gold)}
+.streak-legend{display:flex;gap:16px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--td)}
+.sl-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.streak-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.ss-stat{background:var(--s3);border-radius:8px;padding:14px;text-align:center}
+.ss-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:3px}
+.ss-lbl{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--td);letter-spacing:1px;text-transform:uppercase}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+
+/* ── MOBILE FIXES ── */
+@media(max-width:960px){
+  .hero{padding:80px 24px 40px!important;min-height:auto}
+  .hero h1{font-size:clamp(42px,10vw,72px)!important;letter-spacing:2px}
+  .hero-sub{max-width:100%!important}
+  .hero-meta,.hero-stats{gap:20px!important;flex-wrap:wrap}
+  .content{padding:0 24px 80px!important}
+  .sec{margin-bottom:52px}
+  .sec-title{font-size:clamp(22px,5vw,32px)!important}
+  .flow{gap:0}
+  .flow-step{min-width:110px!important;padding:12px!important}
+  .cards{grid-template-columns:1fr!important}
+  .phases{grid-template-columns:1fr 1fr!important}
+  .tbl,.ctbl,.trades-table{font-size:11px}
+  .tbl th,.ctbl th,.trades-table th{padding:8px 10px!important;font-size:8px}
+  .tbl td,.ctbl td,.trades-table td{padding:8px 10px!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .emo-grid{grid-template-columns:1fr!important}
+  .stats-row{grid-template-columns:1fr 1fr 1fr!important}
+  .tf-grid{grid-template-columns:1fr!important}
+  .tf-row{grid-template-columns:1fr!important}
+  .rco-stats{grid-template-columns:1fr 1fr!important}
+  .ref-grid{grid-template-columns:1fr!important}
+  .ws-days{gap:4px!important}
+  .ws-day{padding:7px 4px!important}
+  .ws-day-val{font-size:16px!important}
+  .ws-day-name{font-size:7px!important}
+  .quiz-header{padding:18px 20px!important;flex-wrap:wrap;gap:10px}
+  .quiz-body{padding:20px!important}
+  .quiz-nav{padding:0 20px 20px!important;flex-wrap:wrap;gap:10px}
+  .q-dots{flex-wrap:wrap}
+  .rules-list{padding:0}
+  .rule-item{gap:10px}
+  .fib-lbl{min-width:auto!important;font-size:10px}
+  .fib-pct{min-width:44px!important}
+  .fib-stars{display:none}
+  .sl-range{min-width:0}
+  .slider-row{grid-template-columns:1fr auto!important;row-gap:4px}
+  .slider-row .sl-lbl{grid-column:1/-1}
+  .candle-tabs,.ftabs,.ind-filters,.trades-filters{flex-wrap:wrap;gap:5px}
+  .candle-display.on{grid-template-columns:1fr!important}
+  .fcontent.on{grid-template-columns:1fr!important}
+  .asel-grid{grid-template-columns:1fr 1fr!important}
+  .wheel-grid{grid-template-columns:1fr 1fr!important}
+  .manifesto-pillars{grid-template-columns:1fr!important}
+  .numbers-inner{grid-template-columns:1fr 1fr!important}
+  .modules-grid{grid-template-columns:1fr!important}
+  .mod-card{padding:22px 20px!important}
+  .alpha-header{padding-bottom:10px}
+  .alpha-letter{font-size:34px!important}
+  .term-head{padding:12px 14px!important}
+  .term-inner{padding:14px!important}
+  .liq-chart{padding:16px!important}
+  .acc-inner{padding:14px 14px 14px 14px!important}
+  .breathing{padding:24px 16px!important}
+  .risk-calc{padding:20px 16px!important}
+  .checklist{padding:18px 16px!important}
+  .trade-form{padding:20px 16px!important}
+  .equity-chart{padding:16px!important}
+  .week-sum{padding:18px 16px!important}
+  .reflection{padding:18px 16px!important}
+  .print-zone{padding:20px 16px!important}
+  .q-text{font-size:15px!important}
+  .r-score{font-size:56px!important}
+  .r-stats{gap:20px!important}
+  .rs-val{font-size:30px!important}
+  .aha{padding:20px 20px!important}
+  .aha h4{font-size:17px!important}
+  .insight{padding:14px 16px!important}
+  .gap-ex{padding:18px 16px!important}
+  .gap-txt{font-size:14px!important;line-height:2!important}
+  .gap-in{min-width:90px!important;font-size:13px!important}
+  .trades-wrap{overflow-x:auto}
+  .trades-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .lex-wrap{padding:16px 16px 60px!important}
+}
+@media(max-width:480px){
+  .phases{grid-template-columns:1fr!important}
+  .stats-row{grid-template-columns:1fr 1fr!important}
+  .hero h1{font-size:clamp(36px,11vw,60px)!important}
+  .hero-meta,.hero-stats{gap:14px}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .numbers-inner{grid-template-columns:1fr 1fr!important}
+  .candle-tabs button,.ftabs button{font-size:11px!important;padding:6px 10px!important}
+  .quiz-header{flex-direction:column;align-items:flex-start}
+}
+
+@media(max-width:960px){
+  html,body{overflow-x:hidden;max-width:100%}
+  .main{box-sizing:border-box;min-width:0}
+  .hero-badge{font-size:8px!important;letter-spacing:2px!important;padding:5px 10px!important}
+  .hero-meta,.hero-stats{flex-wrap:wrap;gap:16px}
+  .hm-val,.hs-val{font-size:26px!important}
+  table{width:100%;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .ind-grid{grid-template-columns:1fr!important}
+  .candle-display.on{grid-template-columns:1fr!important}
+  .fib-row{flex-wrap:wrap;gap:6px}
+  .fib-lbl{min-width:0!important;flex:1;font-size:10px}
+  .fib-stars{display:none!important}
+  .phases,.sm-phases{grid-template-columns:1fr 1fr!important}
+  .emo-grid{grid-template-columns:1fr!important}
+  .quiz-header{flex-wrap:wrap;gap:8px;padding:16px 18px!important}
+  .quiz-body{padding:18px 16px!important}
+  .quiz-nav{padding:0 16px 20px!important;flex-wrap:wrap;gap:8px}
+  .r-score{font-size:52px!important}
+  .r-stats{gap:16px!important}
+  .rs-val{font-size:28px!important}
+  .sl-range{width:100%}
+  .slider-row{display:flex!important;flex-direction:column!important;gap:6px!important}
+  .sl-lbl{font-size:12px}
+  .sl-val{font-size:18px!important;text-align:left!important}
+  .ref-grid,.ac-grid,.wc-grid{grid-template-columns:1fr!important}
+  .tf-grid{grid-template-columns:1fr!important}
+  .tf-row{grid-template-columns:1fr!important}
+  .cc-items{grid-template-columns:1fr!important}
+  .rco-stats{grid-template-columns:1fr 1fr!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .stats-row{grid-template-columns:1fr 1fr 1fr!important}
+  .ws-days{gap:3px!important}
+  .print-zone,.paper-cta{padding:20px 16px!important}
+  .search-bar{padding:12px 16px!important;position:sticky;top:0;z-index:50}
+  .term-head{padding:12px 14px!important}
+  .alpha-header{margin-bottom:12px}
+  .alpha-letter{font-size:32px!important}
+  .gap-txt{line-height:2.1!important;font-size:14px!important}
+  .gap-in{min-width:80px!important}
+  .acc-inner{padding:14px 12px 14px 12px!important}
+  .rule-item{flex-wrap:nowrap}
+  .rule-num{font-size:18px!important;min-width:24px}
+  .cl-txt,.check-text{font-size:12px!important}
+}
+@media(max-width:480px){
+  .hero h1{letter-spacing:1px!important}
+  .phases,.sm-phases{grid-template-columns:1fr!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .stats-row{grid-template-columns:1fr 1fr!important}
+  .cards{grid-template-columns:1fr!important}
+  .rco-stats{grid-template-columns:1fr 1fr!important}
+  .modules-grid{grid-template-columns:1fr!important}
+}
+</style>
+</head>
+<body>
+<button class="nav-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<nav class="sidebar">
+  <div class="sb-top"><div class="sb-logo" style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="width:26px;height:26px;border:1px solid var(--gbdr,rgba(200,146,42,.22));border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1L14 8L8 15L2 8Z" stroke="#C8922A" stroke-width="1.2"/><path d="M8 4L11 8L8 12L5 8Z" fill="#C8922A" opacity=".4"/></svg>
+      </div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--t)">APEX<span style="color:#C8922A">TRADER</span></div>
+    </div>
+    <div class="sb-module"><span>◆</span> MODULE 03 OF 05</div><div class="sb-title">PSYCHOLOGY &<br>DISCIPLINE</div></div>
+  <div class="sb-nav">
+    <span class="nav-lbl">Chapters</span>
+    <a href="#intro" class="nav-a on"><span>🧠</span> Der echte Gegner</a>
+    <a href="#emotionen" class="nav-a"><span>😤</span> Emotionen kennen</a>
+    <a href="#risk" class="nav-a"><span>🛡</span> Risk Management</a>
+    <a href="#regeln" class="nav-a"><span>📜</span> Die 10 Gebote</a>
+    <a href="#routinen" class="nav-a"><span>🔄</span> Routinen & Rituale</a>
+    <a href="#revenge" class="nav-a"><span>⚠️</span> Revenge & Over-Trading</a>
+    <a href="#mindset-check" class="nav-a"><span>🎯</span> Mindset Self-Check</a>
+  </div>
+  <div class="mod-links">
+    <span class="nav-lbl">All Modules</span>
+    <a href="modul-1.html" class="mod-link">◆ M1 — Economics</a>
+    <a href="modul-2.html" class="mod-link">◆ M2 — Analysis</a>
+    <a href="modul-3.html" class="mod-link am">◆ M3 — Psychology</a>
+    <a href="modul-4.html" class="mod-link">◆ M4 — Journal</a>
+    <a href="modul-5.html" class="mod-link">◆ M5 — Lexicon</a>
+    <a href="modul-6.html" class="sb-mod-link">◆ M6 — ICT Deep Dive</a>
+    <a href="modul-7.html" class="sb-mod-link">◆ M7 — Edge & Risk</a>
+  </div>
+  <div class="sb-bottom"><div class="prog-row"><span>Progress</span><span id="pct">0%</span></div><div class="prog-track"><div class="prog-fill" id="pfill"></div></div></div>
+</nav>
+
+<div class="main">
+<div class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="hero-badge">◆ APEX TRADER — MODULE 3</div>
+  <h1>PSYCHOLOGY.<br><em>MASTERY.</em><br>DISCIPLINE.</h1>
+  <p class="hero-sub">Mastering technical analysis is learnable. Mastering your own mind is <em>the real work.</em> 80% of trading losses have no technical cause — they are psychological.</p>
+  <div class="hero-stats">
+    <div><div class="hs-val">7</div><div class="hs-lbl">Chapters</div></div>
+    <div><div class="hs-val">10</div><div class="hs-lbl">Trading Rules</div></div>
+    <div><div class="hs-val">1</div><div class="hs-lbl">Self-Check Quiz</div></div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- 01 INTRO -->
+<div class="sec" id="intro">
+  <div class="sec-head"><div class="sec-num">01</div><h2 class="sec-title">The <em>Real Enemy</em></h2></div>
+  <p>Most people who begin trading believe their greatest challenge is learning the right strategies. That is wrong. <strong>Your greatest adversary sits between your ears.</strong></p>
+  <div class="aha">
+    <div class="aha-lbl">⚡ The Uncomfortable Truth</div>
+    <h4>You can know the perfect strategy and still consistently lose money.</h4>
+    <p>Research shows: traders who outperform their own strategies in backtests underperform those same strategies in real time. The difference: emotion. When real money is at stake, the brain fires the same distress signals as physical danger. The <em>prefrontal cortex</em> disengages under loss. Impulse takes over. Strategy is forgotten.</p>
+  </div>
+  <p>This module is not a motivational post. It is an <strong>operational system</strong> — clear rules, concrete tools and routines that ensure your mind does not work against your account.</p>
+  <div class="insight"><div class="ins-lbl">Kernprinzip</div><p>A profitable trader is not someone who is always right. They are someone who consistently minimises wrong decisions — through systems, not willpower. Willpower is a finite resource. Systems are not.</p></div>
+</div>
+
+<!-- 02 EMOTIONEN -->
+<div class="sec" id="emotionen">
+  <div class="sec-head"><div class="sec-num">02</div><h2 class="sec-title">Knowing &amp; Controlling <em>Emotions</em></h2></div>
+  <p>You cannot control an emotion you do not recognise. Honest self-awareness is the first step — and understanding precisely what each emotion does to your trading decisions.</p>
+  <div class="emo-grid">
+    <div class="emo-card ec-danger">
+      <div class="emo-icon">😡</div>
+      <div class="emo-name">Anger &amp; Frustration</div>
+      <div class="emo-desc">After a loss or missed opportunity. Leads to impulsive, oversized trades — "I will get it back right now."</div>
+      <div class="emo-fix"><div class="emo-fix-lbl">Countermeasure</div><p>20-minute mandatory break after any loss exceeding 1R. Close the platform, step away, perform the breathing exercise.</p></div>
+    </div>
+    <div class="emo-card ec-danger">
+      <div class="emo-icon">😰</div>
+      <div class="emo-name">Fear &amp; Panic</div>
+      <div class="emo-desc">Leads to premature closing of winning trades, hesitation on valid setups, panic exits on normal market noise.</div>
+      <div class="emo-fix"><div class="emo-fix-lbl">Countermeasure</div><p>Before the trade: define EXACTLY where stop and target are. Write it down. If stop is not triggered → no exit. The plan is the plan.</p></div>
+    </div>
+    <div class="emo-card ec-danger">
+      <div class="emo-icon">🤑</div>
+      <div class="emo-name">Gier</div>
+      <div class="emo-desc">Appears after wins or a missed move. Leads to overtrading, oversized positions and poor entries.</div>
+      <div class="emo-fix"><div class="emo-fix-lbl">Countermeasure</div><p>Define a daily trade limit and stick to it. After a successful day: stop early. Lock in gains, do not expand them.</p></div>
+    </div>
+    <div class="emo-card ec-warn">
+      <div class="emo-icon">😤</div>
+      <div class="emo-name">FOMO</div>
+      <div class="emo-desc">A move has started, you missed it. Now you want to "get in" — usually just before the reversal.</div>
+      <div class="emo-fix"><div class="emo-fix-lbl">Countermeasure</div><p>Mantra: "There is always the next trade." A missed opportunity is not a loss. A FOMO entry is.</p></div>
+    </div>
+    <div class="emo-card ec-warn">
+      <div class="emo-icon">🎰</div>
+      <div class="emo-name">Overconfidence</div>
+      <div class="emo-desc">After a winning streak: "I have figured out the market." Risk is increased, rules ignored. The next major loss follows reliably.</div>
+      <div class="emo-fix"><div class="emo-fix-lbl">Countermeasure</div><p>Never increase position size above the defined maximum — regardless of the winning streak. Statistics think, ego does not.</p></div>
+    </div>
+    <div class="emo-card ec-warn">
+      <div class="emo-icon">😶</div>
+      <div class="emo-name">Analysis Paralysis</div>
+      <div class="emo-desc">After several losses: inability to trade even when valid setups appear. Endless waiting for "more confirmation."</div>
+      <div class="emo-fix"><div class="emo-fix-lbl">Countermeasure</div><p>Mandatory paper trading after 3 consecutive losses. Rebuild confidence incrementally through demo successes.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 03 RISK -->
+<div class="sec" id="risk">
+  <div class="sec-head"><div class="sec-num">03</div><h2 class="sec-title">Risk <em>Management</em></h2></div>
+  <p>Risk management is not optional — it is the only thing that keeps you in the game long-term. <strong>With a 35% win rate you are profitable if your average winner is 2× the size of your average loser.</strong> Mathematics beats instinct every time.</p>
+
+  <div class="risk-calc">
+    <div class="rc-title">🛡 Interactive Risk Calculator</div>
+    <div class="slider-row"><span class="sl-lbl">Account Balance (€)</span><input type="range" class="sl-range" id="sl-bal" min="500" max="50000" value="5000" step="100" oninput="calcRisk()"><span class="sl-val" id="sv-bal">5.000€</span></div>
+    <div class="slider-row"><span class="sl-lbl">Risk per Trade (%)</span><input type="range" class="sl-range" id="sl-risk" min="0.5" max="5" value="1" step="0.5" oninput="calcRisk()"><span class="sl-val" id="sv-risk">1%</span></div>
+    <div class="slider-row"><span class="sl-lbl">Risk:Reward Ratio</span><input type="range" class="sl-range" id="sl-rr" min="1" max="5" value="2" step="0.5" oninput="calcRisk()"><span class="sl-val" id="sv-rr">1:2</span></div>
+    <div class="rc-output">
+      <div class="rco-title">Your Risk Profile</div>
+      <div class="rco-stats">
+        <div class="rco-stat"><div class="rco-val" id="rc-loss" style="color:var(--red)">€50</div><div class="rco-lbl">Max Loss/Trade</div></div>
+        <div class="rco-stat"><div class="rco-val" id="rc-gain" style="color:var(--green)">€100</div><div class="rco-lbl">Target Gain</div></div>
+        <div class="rco-stat"><div class="rco-val" id="rc-be" style="color:var(--gold)">34%</div><div class="rco-lbl">Break-Even Win%</div></div>
+        <div class="rco-stat"><div class="rco-val" id="rc-ruined" style="color:var(--purple)">100</div><div class="rco-lbl">Trades Until Ruin</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">💀</div><div class="acc-ttl">Rule: Maximum 1–2% Risk per Trade</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">At 1% risk per trade you need <strong>100 consecutive total losses</strong> to empty the account. At 10%: just 10 consecutive losses.<ul><li>Small risk = psychological freedom to think clearly</li><li>You make better decisions without existential pressure on each trade</li><li>10% loss: only 11.1% gain needed to recover. 50% loss: 100% needed. The asymmetry is brutal.</li></ul></div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🎯</div><div class="acc-ttl">Rule: Minimum 1:2 R:R Before Entry</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">At 1:2 R:R you are profitable at a 34% win rate. You can <strong>lose 66% of your trades</strong> and still make money.<ul><li>Calculate R:R ALWAYS before entry — never after</li><li>No clean 1:2 available → no trade</li><li>Stop must be ATR-based — no arbitrarily tight stop</li></ul></div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">📉</div><div class="acc-ttl">Rule: Define and Enforce a Daily Drawdown Limit</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">Recommendation: <strong>3–5% of account per day.</strong> Limit reached: trading day is over. No "one last attempt."<ul><li>Bad days cluster — this is statistically normal, not personal failure</li><li>Continuing to trade on a bad day typically makes it worse</li><li>The limit trains discipline and prevents catastrophic losses</li></ul></div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🔄</div><div class="acc-ttl">Rule: The Stop Loss is Sacred — Never Adjust Against Yourself</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">Your stop is set — and it stays there. Always.<ul><li>Moving the stop further away when threatened = removing the stop = destroying the strategy</li><li>Permitted: move stop to break-even once the position is profitable</li><li>Permitted: trailing stop in a profitable trade</li><li><strong>Never permitted:</strong> moving the stop further away on a losing trade to delay the pain</li></ul></div></div></div>
+  </div>
+</div>
+
+<!-- 04 REGELN -->
+<div class="sec" id="regeln">
+  <div class="sec-head"><div class="sec-num">04</div><h2 class="sec-title">The <em>10 Rules</em> of a Profitable Trader</h2></div>
+  <p>Rules are not restrictions — they are freedom. With clear rules, you need not make new decisions under stress. You follow the plan. <strong>That is professional trading.</strong></p>
+  <div class="rules-list">
+    <div class="rule-item"><div class="rule-num">01</div><div class="rule-content"><h4>I only trade defined setups</h4><p>No trade without at least 3 confluence factors. "Looks good" is not a setup.</p></div></div>
+    <div class="rule-item"><div class="rule-num">02</div><div class="rule-content"><h4>Stop, Target and Position Size BEFORE Entry</h4><p>All three parameters are calculated and written down BEFORE the trade is opened.</p></div></div>
+    <div class="rule-item"><div class="rule-num">03</div><div class="rule-content"><h4>Enforce the daily trade limit</h4><p>Quality beats quantity. More trades = more emotional decisions = more errors.</p></div></div>
+    <div class="rule-item"><div class="rule-num">04</div><div class="rule-content"><h4>No trading before/after high-impact news</h4><p>30 minutes before and after NFP, CPI, FOMC: no new trade. News events can destroy any TA-based position within seconds.</p></div></div>
+    <div class="rule-item"><div class="rule-num">05</div><div class="rule-content"><h4>After 3 consecutive losses: mandatory break</h4><p>Three consecutive losses signal that either the market or your mindset is off. Both require distance.</p></div></div>
+    <div class="rule-item"><div class="rule-num">06</div><div class="rule-content"><h4>No Revenge Trading — ever</h4><p>No trade with the goal of "getting it back." Losses are a cost of doing business. Revenge trading is gambling.</p></div></div>
+    <div class="rule-item"><div class="rule-num">07</div><div class="rule-content"><h4>Respect the daily drawdown limit</h4><p>Limit reached: trading day is over. Close the laptop. Take a walk. No negotiating.</p></div></div>
+    <div class="rule-item"><div class="rule-num">08</div><div class="rule-content"><h4>Let winners run, cut losers short</h4><p>Closing winning trades early out of fear is at least as damaging as staying in losing trades too long.</p></div></div>
+    <div class="rule-item"><div class="rule-num">09</div><div class="rule-content"><h4>Document every trade in the journal</h4><p>Entry, exit, reason, emotion, screenshot. No exceptions. Without data there is no improvement.</p></div></div>
+    <div class="rule-item"><div class="rule-num">10</div><div class="rule-content"><h4>Weekly review: honest analysis</h4><p>Every Sunday: review the journal. Identify patterns in losses. Do not punish — analyse and improve.</p></div></div>
+  </div>
+</div>
+
+<!-- 05 ROUTINEN -->
+<div class="sec" id="routinen">
+  <div class="sec-head"><div class="sec-num">05</div><h2 class="sec-title">Routines &amp; <em>Rituals</em></h2></div>
+  <p>Professionals do not simply turn on the computer. They have clear pre-trading routines that put them in an optimal mental state. <strong>Consistency comes from structure, not motivation.</strong></p>
+
+  <h3>Pre-Trading Checklist</h3>
+  <div class="checklist">
+    <div class="cl-head"><span>☀️ BEFORE THE FIRST TRADE</span><span class="cl-count" id="clc-pre">0/8</span></div>
+    <div class="cl-item" onclick="tc(this,'clc-pre',8)"><div class="cl-box"></div><div class="cl-txt">News calendar checked — all high-impact events for today are known</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-pre',8)"><div class="cl-box"></div><div class="cl-txt">HTF bias defined — Daily and 4H chart give me the directional bias</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-pre',8)"><div class="cl-box"></div><div class="cl-txt">Key levels marked — S/R, Order Blocks, FVGs, liquidity zones</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-pre',8)"><div class="cl-box"></div><div class="cl-txt">I am rested and have eaten — optimal cognitive function</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-pre',8)"><div class="cl-box"></div><div class="cl-txt">Daily drawdown limit is defined and I am committed to it</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-pre',8)"><div class="cl-box"></div><div class="cl-txt">I am emotionally neutral — no unresolved stress clouding my judgment</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-pre',8)"><div class="cl-box"></div><div class="cl-txt">My trading rules have been read today</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-pre',8)"><div class="cl-box"></div><div class="cl-txt">I ONLY trade when all of the above are satisfied</div></div>
+  </div>
+
+  <h3>Box Breathing — Military Stress Management Technique</h3>
+  <div class="breathing">
+    <div class="br-title">🫁 4-4-4-4 Box Breathing — activates the parasympathetic nervous system</div>
+    <div class="br-circle" id="br-circle"><div class="br-inner" id="br-inner">🫁</div></div>
+    <div class="br-text" id="br-text">READY</div>
+    <div class="br-phase" id="br-phase">Press Start for 4 rounds of Box Breathing</div>
+    <button class="br-btn" id="br-btn" onclick="startBreath()">Start</button>
+    <div class="br-count" id="br-count"></div>
+  </div>
+</div>
+
+<!-- 06 REVENGE -->
+<div class="sec" id="revenge">
+  <div class="sec-head"><div class="sec-num">06</div><h2 class="sec-title">Revenge &amp; <em>Over-Trading</em></h2></div>
+  <p>These are the two most common account-destroyers. Not bad strategies. Not unlucky markets. <strong>Both have an identical cause: emotional loss of control.</strong></p>
+  <div class="aha">
+    <div class="aha-lbl">⚡ Critical Insight</div>
+    <h4>A single uncontrolled revenge trade can erase weeks of profitable trading.</h4>
+    <p>You earn 2% all week. One revenge trade on Friday evening: -5%. The week ends at -3%. Psychologically it feels as though you never won — and you do not understand why you even showed up.</p>
+  </div>
+  <div class="acc-wrap">
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🔄</div><div class="acc-ttl">Revenge Trading — Recognition and Interruption</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner"><strong>Warning signs:</strong><ul><li>"I need to get this back" or "this market owes me a win"</li><li>Position size is larger than normal</li><li>The setup does not meet your usual criteria</li><li>Trade opened directly after a loss without a break</li></ul><strong>Interruption protocol:</strong><ul><li>1. Recognise: "This is a revenge impulse"</li><li>2. Close the trading platform</li><li>3. Box breathing (4 rounds)</li><li>4. Only then: re-read the journal entry for the last trade</li><li>5. Decide soberly whether a new trade makes sense</li></ul></div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">📊</div><div class="acc-ttl">Over-Trading — The "always in the market" problem</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">Stems from boredom, FOMO or the feeling of "not using time in front of the chart."<ul><li>More trades ≠ more profit — often the opposite</li><li>Every additional trade pays spread/commission and increases emotional stress</li><li>Define a minimum waiting time between trades (e.g. 30 minutes)</li><li>Set the daily trade limit in writing and keep it visible</li></ul></div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🧘</div><div class="acc-ttl">The 20-Minute Rule — your most important tool</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">After EVERY loss exceeding 1R: <strong>20-minute mandatory break.</strong> No exceptions.<ul><li>Scientifically established: emotional reactions to financial losses last 15–20 minutes</li><li>During this time: no charts, no phone with broker app, ideally step outside</li><li>After 20 minutes: a sober decision about whether to continue</li><li>This single tool prevents 80% of all revenge trades</li></ul></div></div></div>
+  </div>
+
+  <h3>Post-Trading Checkliste</h3>
+  <div class="checklist">
+    <div class="cl-head"><span>🌙 AFTER THE LAST TRADE</span><span class="cl-count" id="clc-post">0/6</span></div>
+    <div class="cl-item" onclick="tc(this,'clc-post',6)"><div class="cl-box"></div><div class="cl-txt">All trades documented in journal (entry, exit, reason, emotion, screenshot)</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-post',6)"><div class="cl-box"></div><div class="cl-txt">Did I follow my rules today? If not: what triggered the violation?</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-post',6)"><div class="cl-box"></div><div class="cl-txt">Was I active in the correct time windows (Kill Zones)?</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-post',6)"><div class="cl-box"></div><div class="cl-txt">Did I respect my drawdown limit?</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-post',6)"><div class="cl-box"></div><div class="cl-txt">What was my strongest emotion today and as did it affect my trades?</div></div>
+    <div class="cl-item" onclick="tc(this,'clc-post',6)"><div class="cl-box"></div><div class="cl-txt">Tomorrow I start fresh — no loss from today follows me into the next session</div></div>
+  </div>
+</div>
+
+<!-- 07 MINDSET CHECK -->
+<div class="sec" id="mindset-check">
+  <div class="sec-head"><div class="sec-num">07</div><h2 class="sec-title">Mindset <em>Self-Check</em></h2></div>
+  <p>Be honest with yourself. These questions have no "right" or "wrong" — but the patterns in your answers will tell you where you currently stand and what is still holding you back.</p>
+
+  <div class="mq-wrap">
+    <div class="mq-head"><h3>MINDSET SELF-CHECK — 8 QUESTIONS</h3></div>
+
+    <div class="mq-item">
+      <div class="mq-q">1. Your stop-loss was just triggered. Your first reaction is...</div>
+      <div class="mq-opts">
+        <div class="mq-opt" onclick="mqa(this,false,'This is normal. Stop was set. Document it and wait for the next setup.')"><span class="mq-radio"></span>"This happens. I analyse why and move on."</div>
+        <div class="mq-opt" onclick="mqa(this,true,'This is a revenge impulse. 20 minutes away, then a sober reassessment.')"><span class="mq-radio"></span>"I open a new trade immediately — this time I will get it right."</div>
+        <div class="mq-opt" onclick="mqa(this,true,'This is a trauma response. Several smaller paper trades to rebuild confidence.')"><span class="mq-radio"></span>"I cannot trade any more today — too shaken."</div>
+      </div>
+      <div class="mq-feedback"></div>
+    </div>
+
+    <div class="mq-item">
+      <div class="mq-q">2. You see a strong move that you missed. You...</div>
+      <div class="mq-opts">
+        <div class="mq-opt" onclick="mqa(this,false,'Correct. There is always the next valid entry. Patience is a trading edge.')"><span class="mq-radio"></span>Note it and wait for the next valid setup.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'A FOMO entry mid-trend is statistically a losing trade.')"><span class="mq-radio"></span>Enter anyway — the move is still running, so you jump in.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'Emotional frustration over missed opportunities leads to poor subsequent decisions.')"><span class="mq-radio"></span>Feel frustrated and nervously search for the next trade.</div>
+      </div>
+      <div class="mq-feedback"></div>
+    </div>
+
+    <div class="mq-item">
+      <div class="mq-q">3. You have had 5 consecutive winning trades. What changes for you?</div>
+      <div class="mq-opts">
+        <div class="mq-opt" onclick="mqa(this,false,'Correct. Statistically, a winning streak has no bearing on the next trade.')"><span class="mq-radio"></span>Nothing — you continue trading by your rules.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'Overconfidence is one of the most common triggers for catastrophic losses.')"><span class="mq-radio"></span>You increase position size — you are "on fire" right now.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'Excessive caution after wins is also a psychological problem — fear of losing gains.')"><span class="mq-radio"></span>You become more cautious — afraid of losing the gains.</div>
+      </div>
+      <div class="mq-feedback"></div>
+    </div>
+
+    <div class="mq-item">
+      <div class="mq-q">4. Your account lost 4% this week. How do you react?</div>
+      <div class="mq-opts">
+        <div class="mq-opt" onclick="mqa(this,false,'Professional. Drawdowns are part of the game. Analysis over emotion.')"><span class="mq-radio"></span>You analyse the losing trades and look for patterns to avoid.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'This is the beginning of a downward spiral. Higher risk statistically increases losses.')"><span class="mq-radio"></span>You increase risk to recover the losses faster.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'Stopping impulsively without analysis prevents no future repetition of mistakes.')"><span class="mq-radio"></span>You stop for a week without understanding what went wrong.</div>
+      </div>
+      <div class="mq-feedback"></div>
+    </div>
+
+    <div class="mq-item">
+      <div class="mq-q">5. You found no valid setup — the entire day was "boring." You...</div>
+      <div class="mq-opts">
+        <div class="mq-opt" onclick="mqa(this,false,'Discipline also means: doing nothing when there is nothing to do. That is an active choice.')"><span class="mq-radio"></span>Do nothing. No setup, no trade. You log the day as "No valid setup."</div>
+        <div class="mq-opt" onclick="mqa(this,true,'Forced trades without real confluence have negative expected value. Boredom is not a reason to enter.')"><span class="mq-radio"></span>Eventually open a trade — "something will happen eventually."</div>
+      </div>
+      <div class="mq-feedback"></div>
+    </div>
+
+    <div class="mq-item">
+      <div class="mq-q">6. Someone in a forum shows you their "1000% trade." Your reaction?</div>
+      <div class="mq-opts">
+        <div class="mq-opt" onclick="mqa(this,false,'Exactly right. Single trades say nothing about a strategy — only statistics over many trades count.')"><span class="mq-radio"></span>Indifference. One trade says nothing about a strategy.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'FOMO over others' gains is one of the most destructive trading patterns. Focus on your own edge.')"><span class="mq-radio"></span>You immediately want to risk more — "why am I not doing that?"</div>
+      </div>
+      <div class="mq-feedback"></div>
+    </div>
+
+    <div class="mq-item">
+      <div class="mq-q">7. Your trade is up 1.5R. Suddenly a small pullback. You...</div>
+      <div class="mq-opts">
+        <div class="mq-opt" onclick="mqa(this,false,'Correct — provided your target is at a real level. A pullback is normal market behaviour.')"><span class="mq-radio"></span>Let the trade run. Your target is 2R — the plan is the plan.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'Premature closing out of fear reduces your RR and makes profitable strategies unprofitable.')"><span class="mq-radio"></span>Close immediately — better to lock in 1R than risk giving it back.</div>
+      </div>
+      <div class="mq-feedback"></div>
+    </div>
+
+    <div class="mq-item">
+      <div class="mq-q">8. What is your honest definition of a "good trading day"?</div>
+      <div class="mq-opts">
+        <div class="mq-opt" onclick="mqa(this,false,'This is the mindset of a profitable trader. Process over outcome in the short-term picture.')"><span class="mq-radio"></span>A day where I followed my rules 100% — whether I profited or not.</div>
+        <div class="mq-opt" onclick="mqa(this,true,'Outcome-oriented thinking leads to rule violations. A profit through a rule break is more damaging than a loss through rule compliance.')"><span class="mq-radio"></span>A day where I made money.</div>
+      </div>
+      <div class="mq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="aha" style="margin-top:32px">
+    <div class="aha-lbl">🏁 Conclusion</div>
+    <h4>The path from beginner to profitable trader is primarily psychological.</h4>
+    <p>The techniques from Modules 1 and 2 are the craft. The rules from this module are the foundation. Without both together, technical knowledge is useless — with both, trading becomes a reproducible process. Begin the Journal (Module 4) now — that is where everything is applied.</p>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+    <a href="modul-4.html" style="display:inline-block;padding:12px 26px;background:var(--purple);color:#fff;border-radius:6px;text-decoration:none;font-weight:600;font-size:13px;transition:all .2s" onmouseover="this.style.background='#7C5CE8'" onmouseout="this.style.background='var(--purple)'">→ Module 4: Open Journal</a>
+    <a href="modul-2.html" style="display:inline-block;padding:12px 26px;background:var(--s3);color:var(--td);border:1px solid var(--border);border-radius:6px;text-decoration:none;font-size:13px;transition:all .2s">← Back to Module 2</a>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');const id=e.target.id;document.querySelectorAll('.nav-a').forEach(n=>n.classList.toggle('on',n.getAttribute('href')==='#'+id))}})},{threshold:.07});
+document.querySelectorAll('.sec').forEach(s=>obs.observe(s));
+window.addEventListener('scroll',()=>{const p=Math.round(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100);document.getElementById('pfill').style.width=p+'%';document.getElementById('pct').textContent=p+'%'});
+
+function ta(h){const it=h.parentElement,bd=it.querySelector('.acc-body'),open=it.classList.contains('open');document.querySelectorAll('.acc-item').forEach(i=>{i.classList.remove('open');i.querySelector('.acc-body').style.maxHeight='0'});if(!open){it.classList.add('open');bd.style.maxHeight=bd.scrollHeight+'px'}}
+
+// Risk calc
+function calcRisk(){
+  const bal=+document.getElementById('sl-bal').value;
+  const risk=+document.getElementById('sl-risk').value;
+  const rr=+document.getElementById('sl-rr').value;
+  document.getElementById('sv-bal').textContent=bal.toLocaleString('de')+'€';
+  document.getElementById('sv-risk').textContent=risk+'%';
+  document.getElementById('sv-rr').textContent='1:'+rr;
+  const loss=bal*risk/100;
+  const gain=loss*rr;
+  const be=Math.round(100/(1+rr));
+  const ruined=Math.floor(100/risk);
+  document.getElementById('rc-loss').textContent='€'+Math.round(loss).toLocaleString('de');
+  document.getElementById('rc-gain').textContent='€'+Math.round(gain).toLocaleString('de');
+  document.getElementById('rc-be').textContent=be+'%';
+  document.getElementById('rc-ruined').textContent=ruined;
+}
+calcRisk();
+
+// Checklists
+function tc(item,countId,total){
+  item.classList.toggle('chk');
+  const done=item.closest('.checklist').querySelectorAll('.cl-item.chk').length;
+  document.getElementById(countId).textContent=`${done}/${total}`;
+}
+
+// Breathing
+let breathInterval=null,breathRound=0,breathMaxRounds=4;
+const phases=[
+  {name:'INHALE',dur:4000,action:'expand'},
+  {name:'HOLD',dur:4000,action:'hold'},
+  {name:'EXHALE',dur:4000,action:'contract'},
+  {name:'HOLD',dur:4000,action:'hold'}
+];
+let phaseIdx=0,phaseTimer=null;
+
+function startBreath(){
+  if(breathInterval){
+    clearTimeout(phaseTimer);
+    breathRound=0;phaseIdx=0;
+    document.getElementById('br-circle').className='br-circle';
+    document.getElementById('br-text').textContent='READY';
+    document.getElementById('br-phase').textContent='Press Start for 4 rounds of Box Breathing';
+    document.getElementById('br-count').textContent='';
+    document.getElementById('br-btn').textContent='Start';
+    breathInterval=null;return;
+  }
+  breathInterval=true;
+  document.getElementById('br-btn').textContent='Stop';
+  runPhase();
+}
+
+function runPhase(){
+  if(breathRound>=breathMaxRounds){
+    document.getElementById('br-circle').className='br-circle';
+    document.getElementById('br-text').textContent='DONE';
+    document.getElementById('br-phase').textContent='Well done — you are now calmer';
+    document.getElementById('br-count').textContent='';
+    document.getElementById('br-btn').textContent='Retry';
+    breathInterval=null;breathRound=0;phaseIdx=0;return;
+  }
+  const ph=phases[phaseIdx];
+  const circle=document.getElementById('br-circle');
+  circle.className='br-circle '+ph.action;
+  document.getElementById('br-text').textContent=ph.name;
+  document.getElementById('br-phase').textContent=ph.name+' — '+ph.dur/1000+' seconds';
+  document.getElementById('br-count').textContent='Round '+(breathRound+1)+' of '+breathMaxRounds;
+  // countdown
+  let secs=ph.dur/1000;
+  const cd=setInterval(()=>{secs--;document.getElementById('br-phase').textContent=ph.name+' — '+secs+' seconds';if(secs<=0)clearInterval(cd)},1000);
+  phaseTimer=setTimeout(()=>{
+    phaseIdx++;
+    if(phaseIdx>=phases.length){phaseIdx=0;breathRound++;}
+    if(breathInterval)runPhase();
+  },ph.dur);
+}
+
+// Mindset quiz
+function mqa(opt,isWarning,feedback){
+  const item=opt.closest('.mq-item');
+  if(item.querySelector('.mq-feedback.on'))return;
+  item.querySelectorAll('.mq-opt').forEach(o=>o.classList.add('dis'));
+  opt.classList.add(isWarning?'wrn':'cor');
+  const fb=item.querySelector('.mq-feedback');
+  fb.innerHTML='<strong>'+(isWarning?'⚠️ Warning:':'✓ Good:')+'</strong> '+feedback;
+  fb.classList.add('on');
+}
+</script>
+</body>
+</html>
