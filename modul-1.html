@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>APEX TRADER — Module 1: Economic Foundations</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+:root{
+  --bg:#020208;--s1:#06060F;--s2:#0A0A18;--s3:#0E0E20;--s4:#141430;
+  --gold:#C8922A;--gold2:#E8B84B;--gold3:#F5D07A;
+  --gdim:rgba(200,146,42,.1);--gbdr:rgba(200,146,42,.22);--gbdr2:rgba(200,146,42,.38);
+  --cream:#F0E8D8;--cream2:#D8C8A8;
+  --red:#D64040;--rdim:rgba(214,64,64,.1);--rbdr:rgba(214,64,64,.22);
+  --green:#1DB870;--gndim:rgba(29,184,112,.1);--gnbdr:rgba(29,184,112,.22);
+  --blue:#2E8BE0;--bdim:rgba(46,139,224,.08);
+  --purple:#8866DD;--pdim:rgba(136,102,221,.1);
+  --silver:#8888AA;--silver2:#AAAACC;
+  --t:#E8E8F0;--td:#5A5A80;--tf:#1A1A30;
+  --border:rgba(255,255,255,.045);--border2:rgba(255,255,255,.09);--border3:rgba(255,255,255,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font-family:'Outfit',sans-serif;overflow-x:hidden;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9998}
+
+/* SIDEBAR */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:268px;background:rgba(4,4,12,.96);border-right:1px solid var(--border);z-index:100;display:flex;flex-direction:column;backdrop-filter:blur(20px)}
+.sb-header{padding:28px 24px;border-bottom:1px solid var(--border)}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.sb-logo-mark{width:28px;height:28px;border:1px solid var(--gbdr);border-radius:5px;display:flex;align-items:center;justify-content:center}
+.sb-logo-mark svg{width:14px;height:14px}
+.sb-logo-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--t)}
+.sb-logo-name span{color:var(--gold)}
+.sb-module-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.sb-module-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.sb-module-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--cream);line-height:1.2}
+
+.sb-nav{flex:1;overflow-y:auto;padding:16px 8px}
+.sb-nav::-webkit-scrollbar{width:2px}.sb-nav::-webkit-scrollbar-thumb{background:var(--tf)}
+.nav-section-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--tf);padding:12px 14px 6px;display:block}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:6px;text-decoration:none;font-size:12.5px;color:var(--td);transition:all .2s;border-left:2px solid transparent;margin:1px 0}
+.nav-item:hover{background:var(--s3);color:var(--t)}.nav-item.active{background:var(--gdim);color:var(--gold);border-left-color:var(--gold)}
+.nav-item .ni{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+
+.sb-modules{padding:10px 8px;border-top:1px solid var(--border)}
+.sb-mod-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--tf);padding:8px 14px 4px;display:block}
+.sb-mod-link{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:5px;text-decoration:none;font-size:11px;color:var(--td);transition:all .2s;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+.sb-mod-link:hover{background:var(--s3);color:var(--t)}.sb-mod-link.current{color:var(--gold)}
+
+.sb-progress{padding:18px 24px;border-top:1px solid var(--border)}
+.sp-row{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--td);margin-bottom:8px}
+.sp-track{height:2px;background:var(--s3);border-radius:1px;overflow:hidden}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:1px;width:0%;transition:width .7s cubic-bezier(.4,0,.2,1)}
+
+.nav-toggle{display:none;position:fixed;top:16px;left:16px;z-index:200;background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;cursor:pointer;color:var(--t);font-size:15px}
+@media(max-width:960px){.sidebar{transform:translateX(-100%);transition:transform .3s}.sidebar.open{transform:translateX(0)}.main{margin-left:0!important}.hero,.content{padding-left:24px!important;padding-right:24px!important}.nav-toggle{display:flex}}
+
+/* MAIN */
+.main{margin-left:268px;min-height:100vh;position:relative;z-index:1}
+
+/* HERO */
+.hero{position:relative;min-height:520px;display:flex;flex-direction:column;justify-content:flex-end;padding:80px 72px 60px;overflow:hidden}
+.hero-ambient{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 55% 50%,rgba(200,146,42,.06),transparent 70%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);background-size:56px 56px}
+.hero-deco{position:absolute;right:80px;top:50%;transform:translateY(-50%);opacity:.1}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;position:relative;z-index:1}
+.he-line{width:28px;height:1px;background:var(--gold)}
+.he-text{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold)}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,8vw,100px);font-weight:300;letter-spacing:-1px;line-height:.88;position:relative;z-index:1;max-width:700px}
+.hero-title .ht-main{display:block;color:var(--cream)}
+.hero-title .ht-accent{display:block;color:var(--gold);font-style:italic}
+.hero-title .ht-sub{display:block;color:rgba(232,232,240,.25);font-weight:300}
+.hero-desc{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:var(--silver);max-width:560px;margin-top:20px;line-height:1.65;position:relative;z-index:1}
+.hero-desc em{color:var(--gold2);font-style:normal}
+.hero-meta{display:flex;gap:40px;margin-top:36px;position:relative;z-index:1}
+.hm-stat{display:flex;flex-direction:column}
+.hm-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);line-height:1}
+.hm-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--td);margin-top:4px}
+
+/* CONTENT */
+.content{padding:0 72px 120px}
+
+/* SECTION */
+.sec{margin-bottom:90px;opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.sec.vis{opacity:1;transform:translateY(0)}
+.sec-overline{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.so-line{width:24px;height:1px;background:var(--gold)}
+.so-text{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+.sec-num-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);background:var(--gdim);border:1px solid var(--gbdr);padding:4px 10px;border-radius:2px;margin-right:12px}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:300;color:var(--cream);line-height:1.05;margin-bottom:8px}
+.sec-title em{color:var(--gold);font-style:italic}
+.sec-rule{height:1px;background:linear-gradient(90deg,var(--border2),transparent);margin-bottom:32px}
+
+p{font-size:15px;color:var(--td);line-height:1.85;margin-bottom:16px}
+p strong{color:var(--t);font-weight:600}p em{color:var(--gold2);font-style:italic}
+h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--cream);margin:30px 0 14px}
+
+/* AHA BOX */
+.aha{background:linear-gradient(135deg,rgba(200,146,42,.07),rgba(232,184,75,.04));border:1px solid var(--gbdr);border-radius:12px;padding:28px 32px;margin:32px 0;position:relative;overflow:hidden}
+.aha::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.aha::after{content:'◆';position:absolute;right:22px;top:18px;font-size:20px;color:var(--gold);opacity:.3}
+.aha-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.aha-label::before{content:'';width:16px;height:1px;background:var(--gold)}
+.aha h4{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;font-style:italic;color:var(--gold2);margin-bottom:10px}
+.aha p{font-size:14px;color:var(--td);margin:0;line-height:1.75}
+
+/* INSIGHT */
+.insight{background:var(--s2);border:1px solid var(--border);border-left:2px solid var(--gold);padding:20px 24px;margin:24px 0;position:relative}
+.insight::before{content:'';position:absolute;top:0;left:-1px;width:2px;height:100%;background:linear-gradient(180deg,var(--gold),transparent)}
+.ins-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.insight p{font-size:13.5px;color:var(--td);margin:0}
+
+/* WARN */
+.warn{background:var(--rdim);border:1px solid var(--rbdr);border-radius:8px;padding:18px 22px;margin:22px 0;display:flex;gap:14px;align-items:flex-start}
+.warn-icon{font-size:16px;flex-shrink:0;margin-top:2px;opacity:.8}
+.warn p{font-size:13.5px;color:var(--td);margin:0}
+.warn strong{color:var(--red)}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:stretch;gap:0;margin:28px 0;overflow-x:auto;padding-bottom:4px}
+.flow-step{flex-shrink:0;background:var(--s2);border:1px solid var(--border);padding:18px 20px;text-align:center;min-width:148px;transition:border-color .2s;position:relative}
+.flow-step:first-child{border-radius:8px 0 0 8px}.flow-step:last-child{border-radius:0 8px 8px 0}
+.flow-step:hover{border-color:var(--gbdr);z-index:1}
+.flow-icon{font-size:22px;margin-bottom:10px}
+.flow-lbl{font-size:12px;font-weight:600;color:var(--t);margin-bottom:4px}
+.flow-sub{font-size:9px;color:var(--td);font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+.flow-arrow{flex-shrink:0;display:flex;align-items:center;padding:0 2px;color:var(--gold);font-size:16px;background:var(--s2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:24px 0;font-size:13px}
+.tbl th{background:var(--s3);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:11px 16px;text-align:left;border-bottom:1px solid var(--border2)}
+.tbl td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--td);vertical-align:top}
+.tbl tr:hover td{background:var(--s2);color:var(--t)}
+.tag{display:inline-block;padding:2px 8px;border-radius:2px;font-size:8px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.tag-bull{background:var(--gndim);color:var(--green);border:1px solid var(--gnbdr)}
+.tag-bear{background:var(--rdim);color:var(--red);border:1px solid var(--rbdr)}
+.tag-neu{background:var(--gdim);color:var(--gold);border:1px solid var(--gbdr)}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:22px;transition:all .25s;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .25s}
+.card:hover{border-color:var(--border2);transform:translateY(-2px)}.card:hover::after{opacity:1}
+.card-tier{position:absolute;top:14px;right:14px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--tf);text-transform:uppercase}
+.card-ic{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;border:1px solid var(--border2)}
+.ic-gold{background:var(--gdim)}.ic-blue{background:var(--bdim)}.ic-red{background:var(--rdim)}.ic-green{background:var(--gndim)}.ic-purple{background:var(--pdim)}
+.card h4{font-size:14px;font-weight:600;margin-bottom:8px;color:var(--t)}
+.card p{font-size:12.5px;color:var(--td);line-height:1.6;margin:0}
+
+/* ACCORDION */
+.acc{margin:22px 0}
+.acc-item{border:1px solid var(--border);border-radius:8px;margin-bottom:6px;overflow:hidden;transition:border-color .2s}
+.acc-item.open{border-color:var(--gbdr)}
+.acc-head{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;background:var(--s2);user-select:none;transition:background .2s}
+.acc-head:hover{background:var(--s3)}
+.acc-ico{width:30px;height:30px;border-radius:7px;background:var(--s3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .2s}
+.acc-item.open .acc-ico{background:var(--gdim);border-color:var(--gbdr)}
+.acc-ttl{flex:1;font-size:13.5px;font-weight:600;color:var(--t)}
+.acc-arr{color:var(--td);transition:transform .3s;font-size:11px}
+.acc-item.open .acc-arr{transform:rotate(180deg);color:var(--gold)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.acc-inner{padding:18px 18px 18px 60px;font-size:13.5px;color:var(--td);line-height:1.75;border-top:1px solid var(--border)}
+.acc-inner ul{padding-left:16px;margin-top:8px}.acc-inner ul li{margin-bottom:7px}
+.acc-inner strong{color:var(--t)}.acc-inner em{color:var(--gold2)}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:32px;margin:24px 0}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--gold),transparent)}
+.tl-item{position:relative;margin-bottom:28px;opacity:0;transform:translateX(-8px);transition:opacity .5s,transform .5s}
+.tl-item.vis{opacity:1;transform:translateX(0)}
+.tl-dot{position:absolute;left:-28px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--gold);border:2px solid var(--bg);box-shadow:0 0 8px rgba(200,146,42,.4)}
+.tl-title{font-size:14.5px;font-weight:600;color:var(--t);margin-bottom:5px}
+.tl-body{font-size:13px;color:var(--td);line-height:1.7}
+
+/* LIQUIDITY CHART */
+.liq-chart{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:24px;margin:24px 0}
+.liq-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--silver);margin-bottom:18px}
+.chart-svg-wrap{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.liq-legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--td)}
+.ll-item{display:flex;align-items:center;gap:6px}
+.ll-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* TIMEZONE CLOCKS */
+.tz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:22px 0}
+.tz-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center;transition:border-color .2s;position:relative;overflow:hidden}
+.tz-card.live{border-color:var(--gbdr);background:var(--gdim)}
+.tz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0}
+.tz-card.live::before{opacity:1}
+.tz-city{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--td);margin-bottom:6px}
+.tz-time{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--t);margin-bottom:4px;letter-spacing:1px}
+.tz-card.live .tz-time{color:var(--gold)}
+.tz-sess{font-size:10px;color:var(--td);background:var(--s3);padding:3px 9px;border-radius:2px;display:inline-block;font-family:'JetBrains Mono',monospace;letter-spacing:1px;font-size:8px;text-transform:uppercase}
+.tz-card.live .tz-sess{background:rgba(200,146,42,.15);color:var(--gold)}
+.tz-bar{height:2px;background:var(--s3);border-radius:1px;overflow:hidden;margin-top:12px}
+.tz-bar div{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:1px}
+
+/* SM PHASES */
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:24px 0}
+.phase{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:20px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s}
+.phase:hover{transform:translateY(-2px)}
+.phase::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.ph-acc::before{background:linear-gradient(90deg,var(--green),transparent)}.ph-acc:hover{border-color:var(--gnbdr)}
+.ph-mk::before{background:linear-gradient(90deg,var(--blue),transparent)}.ph-mk:hover{border-color:rgba(46,139,224,.3)}
+.ph-dist::before{background:linear-gradient(90deg,var(--gold),transparent)}.ph-dist:hover{border-color:var(--gbdr)}
+.ph-md::before{background:linear-gradient(90deg,var(--red),transparent)}.ph-md:hover{border-color:var(--rbdr)}
+.ph-num{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--td);margin-bottom:10px}
+.ph-icon{font-size:24px;margin-bottom:10px}
+.ph-title{font-size:14px;font-weight:700;color:var(--t);margin-bottom:6px}
+.ph-body{font-size:12px;color:var(--td);line-height:1.6}
+
+/* GAP EXERCISE */
+.gap-ex{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:26px;margin:24px 0;position:relative}
+.gap-ex::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.gap-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.gap-lbl::before{content:'';width:16px;height:1px;background:var(--blue)}
+.gap-txt{font-size:15px;line-height:2.4;color:var(--t)}
+.gap-in{display:inline-block;background:var(--s3);border:1px solid var(--border2);border-radius:4px;padding:2px 10px;min-width:130px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--t);outline:none;text-align:center;transition:border-color .2s}
+.gap-in:focus{border-color:var(--gold)}.gap-in.ok{border-color:var(--green);background:var(--gndim);color:var(--green)}.gap-in.no{border-color:var(--red);background:var(--rdim);color:var(--red)}
+.gap-btn{margin-top:18px;padding:10px 24px;background:var(--bdim);border:1px solid rgba(46,139,224,.3);color:var(--blue);border-radius:4px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .2s;letter-spacing:.5px}
+.gap-btn:hover{background:rgba(46,139,224,.14);transform:translateY(-1px)}
+
+/* QUIZ */
+.quiz-container{background:var(--s2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:28px 0;position:relative}
+.quiz-container::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.quiz-header{background:var(--s3);padding:26px 32px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.qh-left h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold);letter-spacing:1px}
+.qh-left p{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--td);margin-top:4px}
+.qh-right{text-align:right;font-family:'JetBrains Mono',monospace}
+.qh-cur{font-size:32px;font-weight:700;color:var(--t);line-height:1}
+.qh-tot{font-size:10px;color:var(--td);letter-spacing:1px}
+.quiz-body{padding:32px}
+.q-item{display:none;animation:fadeUp .4s ease}.q-item.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.q-num::before{content:'';width:16px;height:1px;background:var(--gold)}
+.q-text{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);margin-bottom:24px;line-height:1.4}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:all .2s;background:var(--bg)}
+.q-opt:hover:not(.dis){border-color:var(--gbdr);background:var(--gdim)}
+.q-opt.sel{border-color:var(--blue);background:var(--bdim)}
+.q-opt.cor{border-color:var(--green);background:var(--gndim)}
+.q-opt.wrn{border-color:var(--red);background:var(--rdim)}
+.q-opt.dis{cursor:default}
+.q-letter{width:26px;height:26px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--td);flex-shrink:0;margin-top:1px;transition:all .2s}
+.q-opt.cor .q-letter{background:var(--green);border-color:var(--green);color:#000}
+.q-opt.wrn .q-letter{background:var(--red);border-color:var(--red);color:#fff}
+.q-opt-txt{font-size:14px;color:var(--td);line-height:1.5}
+.q-opt.sel .q-opt-txt,.q-opt.cor .q-opt-txt{color:var(--t)}
+.q-explanation{margin-top:14px;padding:14px 18px;background:var(--s3);border-radius:6px;border-left:2px solid var(--gold);font-size:13px;color:var(--td);display:none}
+.q-explanation.on{display:block;animation:fadeUp .3s ease}
+.q-explanation strong{color:var(--gold)}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;padding:0 32px 28px}
+.q-dots{display:flex;gap:5px}
+.q-dot{width:7px;height:7px;border-radius:50%;background:var(--s3);transition:all .2s}
+.q-dot.done{background:var(--green)}.q-dot.fail{background:var(--red)}.q-dot.cur{background:var(--gold);transform:scale(1.4)}
+.qbtn{padding:11px 26px;border-radius:4px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;transition:all .2s;letter-spacing:.5px}
+.qbtn.pri{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg)}
+.qbtn.pri:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(200,146,42,.3)}
+.qbtn.sec{background:var(--s3);color:var(--td);border:1px solid var(--border)}
+.qbtn.sec:hover{background:var(--s4);color:var(--t)}
+.qbtn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+.quiz-results{display:none;padding:40px 32px;text-align:center}
+.r-score{font-family:'Cormorant Garamond',serif;font-size:88px;font-weight:300;line-height:1;margin-bottom:6px}
+.r-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--td);margin-bottom:28px}
+.r-stats{display:flex;justify-content:center;gap:40px;margin:20px 0}
+.rs-val{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300}
+.rs-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--td)}
+.r-msg{background:var(--s3);border-radius:8px;padding:18px 22px;margin:20px 0;font-size:14px;color:var(--td);line-height:1.65;border-left:2px solid var(--gold);text-align:left}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+
+/* ── MOBILE FIXES ── */
+@media(max-width:960px){
+  .hero{padding:80px 24px 40px!important;min-height:auto}
+  .hero h1{font-size:clamp(42px,10vw,72px)!important;letter-spacing:2px}
+  .hero-sub{max-width:100%!important}
+  .hero-meta{gap:20px!important;flex-wrap:wrap}
+  .content{padding:0 24px 80px!important}
+  .sec{margin-bottom:52px}
+  .sec-title{font-size:clamp(22px,5vw,32px)!important}
+  .flow{gap:0}.flow-step{min-width:110px!important;padding:12px!important}
+  .cards{grid-template-columns:1fr!important}
+  .phases,.sm-phases{grid-template-columns:1fr 1fr!important}
+  .tbl{font-size:11px}.tbl th{padding:8px 10px!important;font-size:8px}.tbl td{padding:8px 10px!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .liq-chart{padding:16px!important}
+  .quiz-header{padding:18px 20px!important;flex-wrap:wrap;gap:10px}
+  .quiz-body{padding:20px!important}.quiz-nav{padding:0 20px 20px!important}
+  .q-text{font-size:15px!important}
+  .r-score{font-size:56px!important}.r-stats{gap:20px!important}
+  .aha{padding:20px!important}.aha h4{font-size:17px!important}
+  .acc-inner{padding:14px!important}
+  .gap-ex{padding:18px 16px!important}
+  .gap-txt{font-size:14px!important;line-height:2!important}
+  .gap-in{min-width:90px!important;font-size:13px!important}
+  .timeline{padding-left:20px}
+}
+@media(max-width:480px){
+  .sm-phases{grid-template-columns:1fr!important}
+  .hero h1{font-size:clamp(36px,11vw,60px)!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+}
+
+@media(max-width:960px){
+  html,body{overflow-x:hidden;max-width:100%}
+  .main{box-sizing:border-box;min-width:0;margin-left:0!important;width:100%!important}
+  .hero{padding:80px 20px 36px!important;min-height:auto!important}
+  .content{padding:0 20px 80px!important}
+  .hero-badge{font-size:8px!important;letter-spacing:2px!important;padding:5px 10px!important}
+  .hero-meta,.hero-stats{flex-wrap:wrap;gap:16px}
+  table{width:100%;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .cards{grid-template-columns:1fr!important}
+  .phases,.sm-phases{grid-template-columns:1fr 1fr!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .quiz-header{flex-wrap:wrap;gap:8px;padding:16px 18px!important}
+  .quiz-body{padding:18px 16px!important}
+  .quiz-nav{padding:0 16px 20px!important;flex-wrap:wrap;gap:8px}
+  .r-score{font-size:52px!important}
+  .r-stats{gap:16px!important}
+  .rs-val{font-size:28px!important}
+  .gap-txt{line-height:2.1!important;font-size:14px!important}
+  .gap-in{min-width:80px!important}
+  .acc-inner{padding:14px 12px!important}
+  .liq-chart{padding:14px!important}
+}
+@media(max-width:480px){
+  .hero h1{letter-spacing:1px!important}
+  .phases,.sm-phases{grid-template-columns:1fr!important}
+  .tz-grid{grid-template-columns:1fr 1fr!important}
+  .cards{grid-template-columns:1fr!important}
+}
+</style>
+</head>
+<body>
+<button class="nav-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<nav class="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">
+      <div class="sb-logo-mark"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1L14 8L8 15L2 8Z" stroke="#C8922A" stroke-width="1.2"/><path d="M8 4L11 8L8 12L5 8Z" fill="#C8922A" opacity=".4"/></svg></div>
+      <div class="sb-logo-name">APEX<span>TRADER</span></div>
+    </div>
+    <div class="sb-module-tag">◆ Module 01 of 05</div>
+    <div class="sb-module-title">Economic<br>Foundations</div>
+  </div>
+  <div class="sb-nav">
+    <span class="nav-section-lbl">Chapters</span>
+    <a href="#capital-flows" class="nav-item active"><span class="ni">💰</span> Capital Flows & Markets</a>
+    <a href="#actors" class="nav-item"><span class="ni">🏦</span> Institutional Actors</a>
+    <a href="#cooperation" class="nav-item"><span class="ni">🤝</span> Market Interdependencies</a>
+    <a href="#smart-money" class="nav-item"><span class="ni">🎯</span> Smart Money vs Retail</a>
+    <a href="#sessions" class="nav-item"><span class="ni">🕐</span> Trading Sessions</a>
+    <a href="#liquidity" class="nav-item"><span class="ni">💧</span> Liquidity & Stop Hunts</a>
+    <a href="#quiz" class="nav-item"><span class="ni">📋</span> Knowledge Quiz · 20Q</a>
+  </div>
+  <div class="sb-modules">
+    <span class="sb-mod-lbl">All Modules</span>
+    <a href="index.html" class="sb-mod-link">← Back to Hub</a>
+    <a href="modul-1.html" class="sb-mod-link current">◆ M1 — Economics</a>
+    <a href="modul-2.html" class="sb-mod-link">◆ M2 — Analysis</a>
+    <a href="modul-3.html" class="sb-mod-link">◆ M3 — Psychology</a>
+    <a href="modul-4.html" class="sb-mod-link">◆ M4 — Journal</a>
+    <a href="modul-5.html" class="sb-mod-link">◆ M5 — Lexicon</a>
+    <a href="modul-6.html" class="sb-mod-link">◆ M6 — ICT Deep Dive</a>
+    <a href="modul-7.html" class="sb-mod-link">◆ M7 — Edge & Risk</a>
+  </div>
+  <div class="sb-progress">
+    <div class="sp-row"><span>Progress</span><span id="pct">0%</span></div>
+    <div class="sp-track"><div class="sp-fill" id="pfill"></div></div>
+  </div>
+</nav>
+
+<div class="main">
+<div class="hero">
+  <div class="hero-ambient"></div><div class="hero-grid"></div>
+  <div class="hero-deco">
+    <svg width="400" height="240" viewBox="0 0 400 240">
+      <polyline points="0,200 50,175 100,185 160,110 210,130 270,65 320,85 370,38 400,28" fill="none" stroke="#C8922A" stroke-width="2.5"/>
+      <polygon points="0,200 50,175 100,185 160,110 210,130 270,65 320,85 370,38 400,28 400,240 0,240" fill="rgba(200,146,42,0.04)"/>
+      <line x1="160" y1="0" x2="160" y2="240" stroke="#D64040" stroke-width="1" stroke-dasharray="5,4" opacity=".4"/>
+      <text x="165" y="22" fill="#D64040" font-size="9" font-family="monospace" opacity=".7">SELL ZONE</text>
+      <line x1="0" y1="110" x2="400" y2="110" stroke="#1DB870" stroke-width="1" stroke-dasharray="5,4" opacity=".3"/>
+      <text x="8" y="105" fill="#1DB870" font-size="9" font-family="monospace" opacity=".7">SUPPORT</text>
+    </svg>
+  </div>
+  <div class="hero-eyebrow"><div class="he-line"></div><div class="he-text">Apex Trader · Module 01</div></div>
+  <h1 class="hero-title"><span class="ht-main">Economic</span><span class="ht-accent">Foundations</span><span class="ht-sub">& Market Structure</span></h1>
+  <p class="hero-desc">Before you read a single candle — understand <em>who</em> moves markets, <em>why</em> they move and how institutional capital systematically liquidates retail traders.</p>
+  <div class="hero-meta">
+    <div class="hm-stat"><div class="hm-val">6</div><div class="hm-lbl">Chapters</div></div>
+    <div class="hm-stat"><div class="hm-val">20</div><div class="hm-lbl">Quiz Questions</div></div>
+    <div class="hm-stat"><div class="hm-val">3</div><div class="hm-lbl">Exercises</div></div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- CAPITAL FLOWS -->
+<div class="sec" id="capital-flows">
+  <div class="sec-overline"><div class="so-line"></div><div class="so-text">Chapter 01</div></div>
+  <h2 class="sec-title">Capital Flows & <em>Financial Markets</em></h2>
+  <div class="sec-rule"></div>
+  <p>Think of the global financial market not as a fair competition — but as a food chain. At the top sit institutions managing trillions. At the bottom: the retail trader with a brokerage account. <strong>Understanding this hierarchy is the first and most decisive step toward profitable trading.</strong></p>
+  <div class="aha">
+    <div class="aha-label">Insight No. 1</div>
+    <h4>You are not trading "the market" — you are trading against other traders.</h4>
+    <p>For every trade you win, someone else loses. The question isn't "where is price going?" — it's "who is pushing it there, and why right now?" This reframing changes everything about how you approach a chart.</p>
+  </div>
+  <p><strong>Capital markets</strong> are organised systems for transferring capital between investors and capital seekers. Every price movement reflects a buy decision on one side and a sell decision on the other. <span style="color:var(--gold2);border-bottom:1px dashed rgba(200,146,42,.3);cursor:help" title="Control of money supply and interest rates by central banks to manage inflation and growth">Monetary policy</span> set by central banks determines the fundamental direction of all markets.</p>
+  <h3>The Capital Flow Hierarchy</h3>
+  <div class="flow">
+    <div class="flow-step"><div class="flow-icon">🏛️</div><div class="flow-lbl">Central Banks</div><div class="flow-sub">Fed · ECB · BoJ</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon">🏦</div><div class="flow-lbl">Primary Dealers</div><div class="flow-sub">JPMorgan · Goldman</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon">📊</div><div class="flow-lbl">Institutions</div><div class="flow-sub">Hedge Funds · Funds</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon">👤</div><div class="flow-lbl">Retail</div><div class="flow-sub">You · 95%</div></div>
+  </div>
+  <table class="tbl">
+    <thead><tr><th>Macro Factor</th><th>Market Impact</th><th>Relevant For</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Rate Hike</strong></td><td>Cost of capital rises, valuations compress</td><td>Equities, Forex, Bonds</td><td><span class="tag tag-bear">BEARISH</span></td></tr>
+      <tr><td><strong>Rate Cut</strong></td><td>Cheaper money, more risk appetite</td><td>Equities, Crypto, Commodities</td><td><span class="tag tag-bull">BULLISH</span></td></tr>
+      <tr><td><strong>Quantitative Easing</strong></td><td>Massive liquidity injection</td><td>All risk assets</td><td><span class="tag tag-bull">STRONGLY BULL</span></td></tr>
+      <tr><td><strong>Quantitative Tightening</strong></td><td>Liquidity withdrawn from system</td><td>All markets</td><td><span class="tag tag-bear">STRONGLY BEAR</span></td></tr>
+      <tr><td><strong>Strong USD (DXY ↑)</strong></td><td>Emerging markets suffer, commodities fall</td><td>Forex, Commodities, EM</td><td><span class="tag tag-bear">BEARISH EM</span></td></tr>
+      <tr><td><strong>Rising Yields</strong></td><td>Tech stocks fall, bonds become attractive</td><td>Equities, Bonds</td><td><span class="tag tag-neu">COMPLEX</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ACTORS -->
+<div class="sec" id="actors">
+  <div class="sec-overline"><div class="so-line"></div><div class="so-text">Chapter 02</div></div>
+  <h2 class="sec-title">The Institutional <em>Hierarchy</em></h2>
+  <div class="sec-rule"></div>
+  <p>Less than <strong>5% of market participants move more than 80% of volume</strong>. These actors have mandates, constraints and motivations — and that makes their behaviour predictable, if you know what to look for.</p>
+  <div class="cards">
+    <div class="card"><div class="card-ic ic-gold">🏛️</div><span class="card-tier">TIER 1</span><h4>Central Banks</h4><p>Fed, ECB, BoJ. Set the macroeconomic framework via interest rates and money supply. Not profit-driven — mandate-driven. Predictable through FOMC minutes and policy statements.</p></div>
+    <div class="card"><div class="card-ic ic-blue">🏦</div><span class="card-tier">TIER 2</span><h4>Primary Dealers</h4><p>JPMorgan, Goldman Sachs, Citigroup. The only entities with direct Fed access. Market-making is their core business — they are always on both sides. <strong>They need your liquidity.</strong></p></div>
+    <div class="card"><div class="card-ic ic-purple">📈</div><span class="card-tier">TIER 3</span><h4>Hedge Funds</h4><p>Renaissance, Bridgewater, Citadel. Billions managed algorithmically. Short time horizons, highly leveraged, aggressive positioning — often trend-following and mean-reverting simultaneously.</p></div>
+    <div class="card"><div class="card-ic ic-green">🏗️</div><span class="card-tier">TIER 3</span><h4>Asset Managers</h4><p>BlackRock, Vanguard. Manage pension and savings capital. <strong>Slow but enormous volume.</strong> Quarterly rebalancing creates predictable and exploitable flows.</p></div>
+    <div class="card"><div class="card-ic ic-red">👤</div><span class="card-tier">TIER 4</span><h4>Retail Traders</h4><p>You. 95% of active accounts. Small capital, emotional decisions. <strong>Consume liquidity rather than provide it.</strong> Systematically liquidated by stop hunts and FOMO traps.</p></div>
+    <div class="card"><div class="card-ic ic-gold">⚡</div><span class="card-tier">HFT</span><h4>High-Frequency Traders</h4><p>Jane Street, Virtu. Millisecond positions. Arbitrage and market-making at microsecond scale. Important liquidity providers — largely irrelevant for swing and day traders.</p></div>
+  </div>
+  <div class="warn"><div class="warn-icon">⚠️</div><p><strong>The most dangerous misconception:</strong> "The market is fair and neutral." It is not. Market makers see your limit orders and know where stops are clustered. This is not illegal — it is market-making. Your job is to understand how they operate and trade <em>with</em> them, not against them.</p></div>
+  <div class="acc">
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">📋</div><div class="acc-ttl">What is an order book — and why does it matter?</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">The order book is the <strong>heartbeat of every market</strong>. It shows all pending buy and sell orders with their prices and quantities. Institutions actively use this knowledge:<ul><li><strong>Bid side:</strong> All buy orders. Price arrives here → longs are triggered.</li><li><strong>Ask side:</strong> All sell orders. Price arrives here → shorts are triggered.</li><li>Where stop-loss orders cluster, <em>liquidity</em> pools — and that is precisely where institutions drive price to fill their own orders.</li></ul></div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🎯</div><div class="acc-ttl">Why do institutions need liquidity?</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">An institution cannot simply place a $1 billion market order. That single order would move price so dramatically that the trade itself becomes unprofitable. Instead:<ul><li>Positions are built <strong>incrementally</strong> over days or weeks (accumulation)</li><li>They need <strong>counterparties</strong> — retail traders going the wrong direction</li><li>Stop hunts manufacture this liquidity on demand</li><li>This is not conspiracy theory — it is <em>market microstructure</em></li></ul></div></div></div>
+    <div class="acc-item"><div class="acc-head" onclick="ta(this)"><div class="acc-ico">🌑</div><div class="acc-ttl">Dark Pools — the invisible market</div><div class="acc-arr">▼</div></div><div class="acc-body"><div class="acc-inner">Dark pools are private, legal trading systems where institutions execute large blocks without public visibility. Over <strong>40% of US equity trading</strong> happens in dark pools.<ul><li>No display in public order book → no pre-trade price impact</li><li>Post-trade reporting → retail sees volume only after the move</li><li>Practical implication: unexpected volume spikes after large moves often indicate dark pool activity</li></ul></div></div></div>
+  </div>
+</div>
+
+<!-- COOPERATION -->
+<div class="sec" id="cooperation">
+  <div class="sec-overline"><div class="so-line"></div><div class="so-text">Chapter 03</div></div>
+  <h2 class="sec-title">Market <em>Interdependencies</em></h2>
+  <div class="sec-rule"></div>
+  <p>Markets do not exist in isolation. A rate decision in Washington moves EUR/USD, the Nikkei and Bitcoin within milliseconds. Understanding these <strong>cross-market relationships</strong> is the difference between a trader who sees price moves and one who <em>understands</em> them.</p>
+  <div class="timeline" id="tl-main">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Correlations: markets that move together</div><div class="tl-body">Gold and USD move inversely — stronger dollar, lower gold (priced in USD). Oil and CAD often move in parallel — Canada is a major oil exporter. Risk-On vs. Risk-Off explains why all assets fall simultaneously in crisis: investors flee to safety as a cohesive group.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Carry Trade — the invisible foundation</div><div class="tl-body">Investors borrow low-interest currencies (JPY, CHF) and invest in high-yield currencies (AUD, NZD). Trillions flow through forex markets constantly via this mechanism. When the carry trade collapses in Risk-Off environments, all affected assets move violently and quickly.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Bond market — the real boss</div><div class="tl-body">The US bond market at $50+ trillion is larger than all equity markets combined. 10-year Treasury yields are the global risk benchmark. Rising yields → equities fall, USD rises. This is the causal relationship every serious trader must internalise.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Petrodollar and geopolitical flows</div><div class="tl-body">Oil is traded globally in USD — by diplomatic arrangement since the 1970s. This forces all oil-importing nations to hold USD reserves → structural, perpetual USD demand. OPEC decisions and geopolitical events directly affect USD strength.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Central bank coordination in crises</div><div class="tl-body">In crises (2008, 2020), the Fed, ECB, BoJ and others coordinate via swap lines and simultaneous rate cuts. These coordinated actions produce the fastest and most dramatic market movements in history.</div></div>
+  </div>
+  <div class="gap-ex">
+    <div class="gap-lbl">Fill in the Gaps — Market Correlations</div>
+    <div class="gap-txt">
+      When the Federal Reserve raises interest rates, the <input class="gap-in" data-a="USD" placeholder="______"> typically strengthens and <input class="gap-in" data-a="Gold" placeholder="______"> prices fall. Capital rotates out of <input class="gap-in" data-a="Equities" placeholder="______"> into safe havens. This environment is called <input class="gap-in" data-a="Risk-Off" placeholder="______">.
+    </div>
+    <button class="gap-btn" onclick="checkGap(this)">✓ Check Answers</button>
+  </div>
+</div>
+
+<!-- SMART MONEY -->
+<div class="sec" id="smart-money">
+  <div class="sec-overline"><div class="so-line"></div><div class="so-text">Chapter 04</div></div>
+  <h2 class="sec-title">Smart Money <em>vs. Retail</em></h2>
+  <div class="sec-rule"></div>
+  <p><strong>Smart Money</strong> refers to institutional capital — the hands that actually move price. Retail traders are systematically lured into traps, because their stop-loss orders supply the liquidity institutions need to fill their own positions.</p>
+  <div class="aha">
+    <div class="aha-label">Insight No. 2 — This changes everything</div>
+    <h4>The market is not a random system. It is a liquidity harvesting mechanism.</h4>
+    <p>Think about it: where do ALL retail traders place their stop-losses? Below the last swing low, above the last swing high, below round numbers. Price repeatedly drives to these exact zones — not randomly, but to trigger those orders and generate the liquidity needed to fill large institutional positions. Then price reverses. That is a stop hunt. And it happens every session.</p>
+  </div>
+  <!-- Liquidity visualisation -->
+  <div class="liq-chart">
+    <div class="liq-title">Stop Hunt Mechanics — Visualised</div>
+    <div class="chart-svg-wrap">
+      <svg viewBox="0 0 640 200" style="width:100%;height:180px;display:block">
+        <line x1="0" y1="50" x2="640" y2="50" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <line x1="0" y1="100" x2="640" y2="100" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <line x1="0" y1="150" x2="640" y2="150" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+        <rect x="0" y="130" width="640" height="22" fill="rgba(29,184,112,.04)"/>
+        <line x1="0" y1="140" x2="640" y2="140" stroke="#1DB870" stroke-width="1" stroke-dasharray="6,4" opacity=".5"/>
+        <text x="8" y="135" fill="#1DB870" font-size="8" font-family="monospace" opacity=".8">STOP-LOSS CLUSTER (RETAIL LONGS)</text>
+        <line x1="0" y1="52" x2="640" y2="52" stroke="#D64040" stroke-width="1" stroke-dasharray="6,4" opacity=".4"/>
+        <text x="8" y="47" fill="#D64040" font-size="8" font-family="monospace" opacity=".8">STOP-LOSS CLUSTER (RETAIL SHORTS)</text>
+        <polyline points="0,105 60,98 120,88 180,80 230,76 270,83 310,145 320,158 330,148 355,135 400,88 450,68 500,55 545,48 600,42 640,38" fill="none" stroke="#C8922A" stroke-width="2.5"/>
+        <polygon points="0,105 60,98 120,88 180,80 230,76 270,83 310,145 320,158 330,148 355,135 400,88 450,68 500,55 545,48 600,42 640,38 640,200 0,200" fill="rgba(200,146,42,.03)"/>
+        <circle cx="320" cy="158" r="9" fill="none" stroke="#D64040" stroke-width="2" opacity=".85"/>
+        <line x1="320" y1="167" x2="320" y2="185" stroke="#D64040" stroke-width="1.5" opacity=".6"/>
+        <text x="303" y="196" fill="#D64040" font-size="9" font-family="monospace">STOP HUNT</text>
+        <rect x="290" y="128" width="85" height="40" fill="rgba(136,102,221,.08)" rx="3"/>
+        <text x="295" y="124" fill="#8866DD" font-size="8" font-family="monospace" opacity=".9">ACCUMULATION</text>
+        <text x="498" y="40" fill="#1DB870" font-size="9" font-family="monospace" opacity=".9">TRUE MOVE ↑</text>
+      </svg>
+    </div>
+    <div class="liq-legend">
+      <div class="ll-item"><div class="ll-dot" style="background:var(--gold)"></div><span>Price action</span></div>
+      <div class="ll-item"><div class="ll-dot" style="background:var(--green)"></div><span>Stop cluster (longs)</span></div>
+      <div class="ll-item"><div class="ll-dot" style="background:var(--red)"></div><span>Stop hunt zone</span></div>
+      <div class="ll-item"><div class="ll-dot" style="background:var(--purple)"></div><span>Institutional accumulation</span></div>
+    </div>
+  </div>
+  <h3>The 4 Phases of the Smart Money Cycle</h3>
+  <div class="phases">
+    <div class="phase ph-acc"><div class="ph-num">Phase 01</div><div class="ph-icon">📦</div><div class="ph-title">Accumulation</div><div class="ph-body">Institutions quietly build positions inside a range. Retail sees a "boring, directionless market" and loses interest. High volume, low price movement — the classic accumulation signature.</div></div>
+    <div class="phase ph-mk"><div class="ph-num">Phase 02</div><div class="ph-icon">📈</div><div class="ph-title">Markup</div><div class="ph-body">Price breaks out and begins rising. Retail enters late, driven by FOMO. Institutions are already positioned and profitable. Media coverage begins.</div></div>
+    <div class="phase ph-dist"><div class="ph-num">Phase 03</div><div class="ph-icon">📤</div><div class="ph-title">Distribution</div><div class="ph-body">Institutions sell to buying retail at the top. Price consolidates at high levels — looks bullish. Retail continues buying. Smart money is quietly exiting.</div></div>
+    <div class="phase ph-md"><div class="ph-num">Phase 04</div><div class="ph-icon">📉</div><div class="ph-title">Markdown</div><div class="ph-body">Price collapses. Retail holds losing positions, averages down. Institutions are already out or short. Retail panic-sells at the absolute bottom. Institutions begin accumulating again.</div></div>
+  </div>
+</div>
+
+<!-- SESSIONS -->
+<div class="sec" id="sessions">
+  <div class="sec-overline"><div class="so-line"></div><div class="so-text">Chapter 05</div></div>
+  <h2 class="sec-title">Trading Sessions & <em>Time Zones</em></h2>
+  <div class="sec-rule"></div>
+  <p><strong>80% of all meaningful price movements</strong> occur within defined trading sessions. Trading outside these windows means fighting thin liquidity and false signals with no institutional backing.</p>
+  <div class="tz-grid">
+    <div class="tz-card" id="tz-syd"><div class="tz-city">Sydney · AEST</div><div class="tz-time" id="tt-sy">--:--</div><div class="tz-sess">Asia Session</div><div class="tz-bar"><div style="width:55%"></div></div></div>
+    <div class="tz-card" id="tz-tok"><div class="tz-city">Tokyo · JST</div><div class="tz-time" id="tt-tk">--:--</div><div class="tz-sess">Asia Session</div><div class="tz-bar"><div style="width:65%"></div></div></div>
+    <div class="tz-card" id="tz-ldn"><div class="tz-city">London · GMT/BST</div><div class="tz-time" id="tt-ld">--:--</div><div class="tz-sess">London Session</div><div class="tz-bar"><div style="width:92%"></div></div></div>
+    <div class="tz-card" id="tz-ny"><div class="tz-city">New York · EST/EDT</div><div class="tz-time" id="tt-ny">--:--</div><div class="tz-sess">NY Session</div><div class="tz-bar"><div style="width:97%"></div></div></div>
+  </div>
+  <table class="tbl">
+    <thead><tr><th>Session</th><th>Time (CET)</th><th>Character</th><th>Best Assets</th><th>Volatility</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Asia (Tokyo)</strong></td><td>01:00–09:00</td><td>Quiet, range-bound, frequent fakeouts</td><td>JPY, AUD, NZD</td><td><span class="tag tag-neu">LOW</span></td></tr>
+      <tr><td><strong>London Open</strong></td><td>08:00–09:30</td><td><strong>Strongest momentum move of the day</strong></td><td>EUR, GBP, all Majors</td><td><span class="tag tag-bull">VERY HIGH</span></td></tr>
+      <tr><td><strong>L/NY Overlap</strong></td><td>14:30–17:00</td><td><strong>Highest volume of the day</strong></td><td>All Majors, S&amp;P, NDX</td><td><span class="tag tag-bull">EXTREME</span></td></tr>
+      <tr><td><strong>NY Open</strong></td><td>14:30–16:00</td><td>Second momentum move, often reversal</td><td>USD pairs, US equities</td><td><span class="tag tag-bull">VERY HIGH</span></td></tr>
+      <tr><td><strong>NY Close</strong></td><td>20:00–22:00</td><td>End-of-day rebalancing</td><td>All</td><td><span class="tag tag-neu">MEDIUM</span></td></tr>
+    </tbody>
+  </table>
+  <div class="insight"><div class="ins-label">ICT Kill Zones</div><p>ICT (Inner Circle Trader) defines specific high-probability windows: <strong>London Open Kill Zone (08:00–10:00 CET)</strong> and <strong>New York Open Kill Zone (14:30–16:00 CET)</strong>. These are the two periods where institutional activity is highest and setups carry the greatest statistical edge.</p></div>
+</div>
+
+<!-- LIQUIDITY -->
+<div class="sec" id="liquidity">
+  <div class="sec-overline"><div class="so-line"></div><div class="so-text">Chapter 06</div></div>
+  <h2 class="sec-title">Liquidity, <em>Stop Hunts</em> & Order Blocks</h2>
+  <div class="sec-rule"></div>
+  <p>Everything institutions do revolves around liquidity. They need it to enter. They need it to exit. And as a retail trader, you are frequently the source.</p>
+  <div class="aha">
+    <div class="aha-label">Insight No. 3 — This changes your trading permanently</div>
+    <h4>Your stop-loss is not a safety net. It is a target.</h4>
+    <p>When you place your stop below a clear swing low, you do what millions of other retail traders do. That creates a cluster zone of sell orders — triggered stops from long positions. An institution that wants to buy drives price into that zone, liquidates you and everyone else, collects the liquidity it needs and then price rises. You watch from the sidelines.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><div class="card-ic ic-red">🎯</div><h4>Sell-Side Liquidity (SSL)</h4><p>Stop-loss orders from long positions sitting <em>below</em> swing lows and support levels. The classic stop hunt: price dips through the level, triggers all stops, institutions buy — then price rises.</p></div>
+    <div class="card"><div class="card-ic ic-green">🎯</div><h4>Buy-Side Liquidity (BSL)</h4><p>Stop-loss orders from short positions sitting <em>above</em> swing highs. Price briefly breaks over the level, triggers short stops, institutions sell — then price falls.</p></div>
+    <div class="card"><div class="card-ic ic-gold">💼</div><h4>Order Blocks (OB)</h4><p>The last candle <em>before</em> an impulsive move. That is where institutional orders were placed. When price returns to an order block (mitigation), it often reacts sharply — one of the most precise ICT entries.</p></div>
+    <div class="card"><div class="card-ic ic-blue">🌀</div><h4>Fair Value Gaps (FVG)</h4><p>When price moves so fast that no fair exchange could occur between buyers and sellers, a gap remains. Markets statistically tend to return to fill these zones — measurable and reproducible.</p></div>
+    <div class="card"><div class="card-ic ic-gold">⚖️</div><h4>Equal Highs / Lows (EQH/EQL)</h4><p>Not actual resistance — accumulated liquidity. Retail sees "double top resistance." SMC sees a stop cluster. These levels are frequently breached briefly to hunt stops before reversing.</p></div>
+    <div class="card"><div class="card-ic ic-purple">📊</div><h4>Premium & Discount</h4><p>Above the 50% Fibonacci of any range = Premium (expensive, good for selling). Below = Discount (cheap, good for buying). Institutions buy discount and sell premium — consistently.</p></div>
+  </div>
+  <div class="gap-ex">
+    <div class="gap-lbl">Fill in the Gaps — Smart Money Logic</div>
+    <div class="gap-txt">
+      Stop-loss orders from long positions typically sit <input class="gap-in" data-a="below" placeholder="______"> a swing low. This cluster is called <input class="gap-in" data-a="Sell-Side Liquidity" placeholder="__________">. An institution drives price into this zone to generate <input class="gap-in" data-a="liquidity" placeholder="______"> for its own orders. This process is called a <input class="gap-in" data-a="Stop Hunt" placeholder="______">.
+    </div>
+    <button class="gap-btn" onclick="checkGap(this)">✓ Check Answers</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="sec" id="quiz">
+  <div class="sec-overline"><div class="so-line"></div><div class="so-text">Knowledge Check</div></div>
+  <h2 class="sec-title">Module 1 Quiz — <em>20 Questions</em></h2>
+  <div class="sec-rule"></div>
+  <p>Test your understanding of economic foundations. Some answers are subtle — this quiz rewards genuine comprehension, not memorisation.</p>
+
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <div class="qh-left"><h3>Economics Quiz</h3><p>Module 01 · Economic Foundations</p></div>
+      <div class="qh-right"><div class="qh-cur" id="qcur">1</div><div class="qh-tot">of 20</div></div>
+    </div>
+    <div class="quiz-body" id="qbody"></div>
+    <div class="quiz-nav">
+      <button class="qbtn sec" id="qprev" onclick="prevQ()" disabled>← Back</button>
+      <div class="q-dots" id="qdots"></div>
+      <button class="qbtn pri" id="qnext" onclick="nextQ()">Next →</button>
+    </div>
+    <div class="quiz-results" id="qres">
+      <div class="r-score" id="rscore"></div>
+      <div class="r-label">Your Result</div>
+      <div class="r-stats">
+        <div><div class="rs-val" id="rco" style="color:var(--green)">0</div><div class="rs-lbl">Correct</div></div>
+        <div><div class="rs-val" id="rwr" style="color:var(--red)">0</div><div class="rs-lbl">Wrong</div></div>
+        <div><div class="rs-val" id="rpct" style="color:var(--gold)">0%</div><div class="rs-lbl">Score</div></div>
+      </div>
+      <div class="r-msg" id="rmsg"></div>
+      <button class="qbtn pri" onclick="restartQ()" style="margin-top:16px">↺ Retake Quiz</button>
+    </div>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+// OBSERVER
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');const id=e.target.id;document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.getAttribute('href')==='#'+id))}})},{threshold:.07});
+document.querySelectorAll('.sec').forEach(s=>obs.observe(s));
+const tlObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.1});
+document.querySelectorAll('.tl-item').forEach((el,i)=>{setTimeout(()=>tlObs.observe(el),i*80)});
+
+// PROGRESS
+window.addEventListener('scroll',()=>{const p=Math.round(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100);document.getElementById('pfill').style.width=p+'%';document.getElementById('pct').textContent=p+'%'});
+
+// ACCORDION
+function ta(h){const it=h.parentElement,bd=it.querySelector('.acc-body'),open=it.classList.contains('open');document.querySelectorAll('.acc-item').forEach(i=>{i.classList.remove('open');i.querySelector('.acc-body').style.maxHeight='0'});if(!open){it.classList.add('open');bd.style.maxHeight=bd.scrollHeight+'px'}}
+
+// CLOCKS
+function updateClocks(){const now=new Date();const f=tz=>now.toLocaleTimeString('en-GB',{timeZone:tz,hour:'2-digit',minute:'2-digit'});document.getElementById('tt-sy').textContent=f('Australia/Sydney');document.getElementById('tt-tk').textContent=f('Asia/Tokyo');document.getElementById('tt-ld').textContent=f('Europe/London');document.getElementById('tt-ny').textContent=f('America/New_York')}
+updateClocks();setInterval(updateClocks,30000);
+
+// GAP CHECK
+function checkGap(btn){const ex=btn.parentElement;ex.querySelectorAll('.gap-in').forEach(i=>{const v=i.value.trim().toLowerCase(),a=i.dataset.a.toLowerCase();i.classList.remove('ok','no');if(v===a)i.classList.add('ok');else if(v!=='')i.classList.add('no')})}
+
+// QUIZ
+const QD=[
+  {q:"What is the primary mandate of a central bank like the Federal Reserve?",o:["Generate profits for shareholders","Control monetary policy and maintain price stability","Purchase equities on the open market","Maximise profits for primary dealer banks"],c:1,e:"Central banks operate under a political mandate — price stability and maximum employment — not profit motives. Their primary tools are interest rates and quantitative easing/tightening."},
+  {q:"What typically happens to the USD when the Fed raises interest rates?",o:["USD weakens as capital flees the US","USD strengthens because higher yields attract foreign capital","USD remains unchanged — rates don't affect forex","USD weakens because imports become more expensive"],c:1,e:"Higher interest rates mean higher yields on USD-denominated assets (e.g. Treasuries). Foreign capital must first be converted to USD to access these yields → USD demand rises → USD strengthens. One of the strongest forex drivers."},
+  {q:"What is a 'Stop Hunt' in a trading context?",o:["A strategy for setting multiple stop-loss orders","The deliberate movement of price toward stop-loss clusters to generate institutional liquidity","An algorithm that automatically calculates stop levels","Placing stops above the current market price"],c:1,e:"Institutions drive price deliberately to zones where stop-loss orders cluster. The triggered orders generate the buy or sell side liquidity institutions need to fill their own large positions at favourable prices."},
+  {q:"What is 'Sell-Side Liquidity' (SSL)?",o:["Sell offers on the open market","Stop-loss orders from long positions sitting below swing lows","Liquidity created through short selling","Selling pressure at resistance levels"],c:1,e:"SSL is the pool of stop-loss orders from long-positioned traders, typically clustered below the last swing low. When triggered, they create selling pressure — allowing institutions to buy at better prices before price rises."},
+  {q:"Which trading session typically has the HIGHEST volume and volatility?",o:["Asian session (Tokyo)","European session alone","London/New York overlap (14:30–17:00 CET)","Sydney session"],c:2,e:"The London-New York overlap unites the two largest financial centres simultaneously. This produces maximum volume, tightest spreads and the clearest directional moves of the trading day."},
+  {q:"What is a 'Fair Value Gap' (FVG)?",o:["The difference between bid and ask (spread)","A price zone created when price moves so fast that no fair exchange could occur","The fair value of an asset after fundamental analysis","The difference between market price and book value"],c:1,e:"FVGs (also called imbalances) form during impulsive moves where no efficient exchange occurred. Markets tend toward efficiency — so statistically they frequently return to fill these gaps. A core concept in ICT/SMC methodology."},
+  {q:"What does 'Quantitative Easing' (QE) mean?",o:["Raising interest rates","The central bank purchasing bonds to inject money into the financial system","Regulating hedge funds","Quantitative analysis of market data"],c:1,e:"QE involves the central bank buying bonds on the open market, pumping liquidity into the financial system. It suppresses long-term rates and drives risk assets upward — dramatically visible after the 2020 COVID crash."},
+  {q:"Which statement about the Smart Money Cycle is CORRECT?",o:["Retail accumulates first and institutions follow","Institutions accumulate quietly, then markup occurs, then distribution to retail at the top, then markdown","All phases occur simultaneously and cannot be distinguished","The cycle only exists in theory"],c:1,e:"The Wyckoff principle (adopted by SMC): Accumulation → Markup → Distribution → Markdown. The critical insight: institutions buy at the accumulation low and sell to retail at the distribution high. Retail buys the high and sells the low."},
+  {q:"What is an 'Order Block' (OB) in ICT methodology?",o:["A large block of orders that blocks the market","The last candle before an impulsive institutional move — a zone for future reactions","All orders clustered in a price zone","An indicator that visualises orders"],c:1,e:"An order block is the candle (or zone) directly preceding a strong impulsive move. Institutions placed their positions there. When price returns to an OB (mitigation), it often reacts sharply — one of the most precise ICT entries."},
+  {q:"What describes the 'Carry Trade'?",o:["Simultaneously holding long and short positions","Borrowing a low-interest currency to invest in a high-yield currency, profiting from the rate differential","The physical movement of currencies between banks","Holding positions overnight"],c:1,e:"Example: borrow JPY at 0.1%, buy AUD yielding 4.5% → earn the 4.4% differential (carry) annually. Trillions flow through forex via this mechanism. During Risk-Off, carry trades collapse suddenly, causing explosive moves in JPY and CHF."},
+  {q:"What do Dark Pools serve in institutional trading?",o:["Illegal insider trading platforms","Private trading systems allowing institutions to execute large blocks without moving the public market","High-frequency trading platforms","Regulated derivatives markets"],c:1,e:"Dark pools are legal. Over 40% of US equity trading occurs there. Institutions can execute billions without creating pre-trade price impact in the public market — explaining why large moves seemingly appear 'from nowhere.'"},
+  {q:"What does 'Premium' mean in the ICT framework?",o:["A high trading fee","Everything above the 50% Fibonacci of a range — considered expensive and favourable for selling","A broker bonus for active traders","The best available trading setup"],c:1,e:"ICT divides every range at the 50% Fibonacci. Above = Premium (expensive) → institutions sell here. Below = Discount (cheap) → institutions buy here. This explains why buying at highs is structurally unprofitable."},
+  {q:"Why can a large institution NOT simply place a multi-billion-dollar market order?",o:["Because it is prohibited by regulation","Because it would move price so dramatically that the trade itself becomes unprofitable","Because institutions can only use limit orders","Because brokers reject such order sizes"],c:1,e:"Market microstructure: every buy needs a seller. A $1 billion market order buys through all available sells and drives price far above the desired entry. Institutions must therefore accumulate incrementally over time, using stop hunts to manufacture liquidity."},
+  {q:"What is the significance of rising US bond yields for equity markets?",o:["No meaningful relationship exists","Rising yields typically cause equities to fall — higher capital costs and competing yield alternative","Rising yields are always bullish for equities","Bond market is smaller and therefore irrelevant"],c:1,e:"The US bond market ($50+ trillion) is larger than all equity markets combined. Rising yields: bonds become more attractive, equity valuations fall (DCF impact), capital costs rise. The single most important cross-market relationship for any equity or forex trader."},
+  {q:"What are 'Equal Highs' (EQH) from an institutional perspective?",o:["Two identical highs confirming strong resistance","Zones of accumulated buy-side liquidity that institutions target to hunt short stops","A candlestick pattern signalling reversal","An indicator showing overbought zones"],c:1,e:"Retail sees EQH as 'strong resistance.' SMC sees accumulated stop-loss orders from short positions (buy-side liquidity). Institutions drive price over the EQH, hunt all short stops, collect their liquidity — then price falls. The 'double top' as a bull trap."},
+  {q:"What describes 'Market Structure'?",o:["The technical infrastructure of an exchange","The pattern of swing highs and lows that defines the directional bias of price","The market capitalisation of traded assets","The regulatory structure of financial markets"],c:1,e:"Market structure: Higher Highs + Higher Lows = Bullish. Lower Highs + Lower Lows = Bearish. A 'Break of Structure' (BOS) signals a possible trend change. This is the foundation for directional bias in all ICT/SMC frameworks."},
+  {q:"What happens to the carry trade in a 'Risk-Off' environment?",o:["Carry trades become more profitable as rate differentials widen","Carry trades collapse — investors buy back low-yield currencies, causing explosive JPY/CHF appreciation","Carry trades are immune to Risk-Off conditions","Carry trades automatically switch into safe-haven currencies"],c:1,e:"In crises, traders close carry positions: sell AUD/NZD, buy JPY back → explosive JPY appreciation within hours. The JPY carry trade collapse of 2024 triggered global sell-offs across all markets simultaneously."},
+  {q:"What fundamentally distinguishes a 'Market Maker' from a 'Retail Trader'?",o:["Market makers simply have more capital","Market makers provide liquidity (always the counterparty), retail consumes it — this structural asymmetry explains most retail losses","Market makers pay no taxes","There is no meaningful functional difference"],c:1,e:"Market makers always stand on both sides, see the full order book, and earn the spread. Retail 'takes' liquidity and pays for it. This information asymmetry is the structural reason 80-90% of retail accounts lose money long-term."},
+  {q:"Which statement about institutional accumulation is FALSE?",o:["Institutional accumulation often occurs in sideways markets","High volume with low price movement can indicate accumulation","Accumulation is always immediately visible in the chart","Markup typically follows the accumulation phase"],c:2,e:"This is FALSE — and that is precisely the point. If accumulation were obvious, every trader would participate and the strategy would self-destruct. Accumulation is designed to look like 'nothing happening' — which is why range phases are routinely misread."},
+  {q:"What does the DXY (Dollar Currency Index) measure?",o:["USD against a single currency","A weighted average of USD against 6 major currencies — a rising DXY signals dollar strength affecting all USD-correlated assets","The performance of the US equity market","An index of US commodity prices"],c:1,e:"DXY measures USD against EUR (57.6%), JPY (13.6%), GBP (11.9%), CAD (9.1%), SEK (4.2%), CHF (3.6%). Rising DXY: USD strengthens → EUR/USD falls → commodities (USD-priced) come under pressure → EM currencies weaken. Every professional trader monitors DXY daily."},
+];
+
+let cQ=0,ans=new Array(20).fill(null),res=new Array(20).fill(null);
+function renderQ(i){
+  const d=QD[i];
+  document.getElementById('qbody').innerHTML=`<div class="q-item on"><div class="q-num">Question ${i+1} of 20</div><div class="q-text">${d.q}</div><div class="q-opts">${d.o.map((opt,j)=>`<div class="q-opt ${ans[i]!==null?'dis':''} ${ans[i]===j?(res[i]?'cor':'wrn'):''} ${ans[i]===d.c&&j===d.c&&ans[i]!==j?'cor':''}" onclick="selA(${j})"><span class="q-letter">${['A','B','C','D'][j]}</span><span class="q-opt-txt">${opt}</span></div>`).join('')}</div>${ans[i]!==null?`<div class="q-explanation on"><strong>${res[i]?'✓ Correct.':'✗ Incorrect.'}</strong> ${d.e}</div>`:''}</div>`;
+  document.getElementById('qcur').textContent=i+1;
+  document.getElementById('qprev').disabled=i===0;
+  document.getElementById('qnext').textContent=i===19?'View Results →':'Next →';
+  renderDots();
+}
+function selA(j){
+  if(ans[cQ]!==null)return;
+  const d=QD[cQ];ans[cQ]=j;res[cQ]=j===d.c;
+  document.querySelectorAll('.q-opt').forEach((el,i)=>{el.classList.add('dis');if(i===d.c)el.classList.add('cor');if(i===j&&j!==d.c)el.classList.add('wrn')});
+  const exp=document.createElement('div');exp.className='q-explanation on';exp.innerHTML=`<strong>${res[cQ]?'✓ Correct.':'✗ Incorrect.'}</strong> ${d.e}`;document.querySelector('.q-opts').after(exp);
+  renderDots();
+}
+function nextQ(){if(cQ===19){showRes();return}cQ++;renderQ(cQ)}
+function prevQ(){if(cQ===0)return;cQ--;renderQ(cQ)}
+function renderDots(){document.getElementById('qdots').innerHTML=QD.map((_,i)=>{let c='';if(i===cQ)c='cur';else if(ans[i]!==null)c=res[i]?'done':'fail';return`<div class="q-dot ${c}"></div>`}).join('')}
+function showRes(){
+  document.getElementById('qbody').style.display='none';document.querySelector('.quiz-nav').style.display='none';
+  const re=document.getElementById('qres');re.style.display='block';
+  const co=res.filter(Boolean).length,pct=Math.round(co/20*100);
+  document.getElementById('rscore').textContent=`${co}/20`;document.getElementById('rscore').style.color=pct>=70?'var(--green)':pct>=50?'var(--gold)':'var(--red)';
+  document.getElementById('rco').textContent=co;document.getElementById('rwr').textContent=20-co;document.getElementById('rpct').textContent=pct+'%';
+  const msgs=[[90,"Excellent. You have developed a genuine understanding of market structure and institutional mechanics. Ready for Module 2."],[70,"Solid foundation. A few concepts need reinforcement — review the chapters corresponding to missed questions before proceeding."],[50,"Foundation present but incomplete. Re-read Chapters 4–6 on Smart Money and liquidity — these are fundamental to everything that follows."],[0,"The foundations need deeper grounding. Read Module 1 from the beginning. Do not proceed without mastering this material."]];
+  document.getElementById('rmsg').textContent=msgs.find(([min])=>pct>=min)[1];
+}
+function restartQ(){cQ=0;ans=new Array(20).fill(null);res=new Array(20).fill(null);document.getElementById('qbody').style.display='block';document.querySelector('.quiz-nav').style.display='flex';document.getElementById('qres').style.display='none';renderQ(0)}
+renderQ(0);
+</script>
+</body>
+</html>
